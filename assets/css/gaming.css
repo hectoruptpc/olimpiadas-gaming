@@ -1,0 +1,927 @@
+/* ==============================================================================
+   OLIMPIADAS GAMING - SISTEMA DE DISEÑO CLARO CON ACENTOS TEMÁTICOS (LIGHT THEME)
+   ============================================================================== */
+
+:root {
+  --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', monospace;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* FC26 Theme Colors */
+  --fc-primary: #0284c7;
+  --fc-primary-hover: #0369a1;
+  --fc-accent: #059669;
+  --fc-bg-soft: #f0f9ff;
+  --fc-badge: #e0f2fe;
+  --fc-badge-text: #0369a1;
+
+  /* MK1 Theme Colors */
+  --mk-primary: #dc2626;
+  --mk-primary-hover: #b91c1c;
+  --mk-accent: #d97706;
+  --mk-bg-soft: #fef2f2;
+  --mk-badge: #fee2e2;
+  --mk-badge-text: #991b1b;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  color: #1e293b;
+  background-color: #f8fafc;
+  transition: background 0.4s ease;
+  overflow-x: auto;
+}
+
+/* Fondos Claros con marcas de agua sutiles de la temática */
+body.theme-fc26 {
+  background: 
+    linear-gradient(rgba(248, 250, 252, 0.93), rgba(241, 245, 249, 0.95)),
+    url('/olimpiadas_gaming/assets/img/fc26_bg.jpg') fixed center center / cover no-repeat;
+}
+
+body.theme-mk1 {
+  background: 
+    linear-gradient(rgba(254, 242, 242, 0.93), rgba(248, 250, 252, 0.95)),
+    url('/olimpiadas_gaming/assets/img/mk1_bg.jpg') fixed center center / cover no-repeat;
+}
+
+/* ==============================================================================
+   TARJETAS Y PANELES (LIGHT CARD DESIGN)
+   ============================================================================== */
+.light-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+}
+
+.light-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.theme-fc26 .light-card {
+  border-top: 3px solid var(--fc-primary);
+}
+
+.theme-mk1 .light-card {
+  border-top: 3px solid var(--mk-primary);
+}
+
+/* Barra de Navegación */
+.navbar-gaming {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 0.9rem 1.4rem;
+}
+
+.nav-link-gaming {
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.nav-link-gaming:hover {
+  color: #0f172a;
+  background: #f1f5f9;
+}
+
+.theme-fc26 .nav-link-gaming.active {
+  background: var(--fc-badge);
+  color: var(--fc-primary);
+  font-weight: 800;
+}
+
+.theme-mk1 .nav-link-gaming.active {
+  background: var(--mk-badge);
+  color: var(--mk-primary);
+  font-weight: 800;
+}
+
+/* Switcher de Juego (Pill Tabs) */
+.game-switch-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 800;
+  font-size: 0.88rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  border: 1.5px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.game-switch-btn.fc26-btn {
+  color: #0369a1;
+  background: #f0f9ff;
+  border-color: #bae6fd;
+}
+.game-switch-btn.fc26-btn:hover,
+.theme-fc26 .game-switch-btn.fc26-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+.game-switch-btn.mk1-btn {
+  color: #991b1b;
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+.game-switch-btn.mk1-btn:hover,
+.theme-mk1 .game-switch-btn.mk1-btn.active {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+}
+
+/* Brand Icon & Logo Universidad */
+.univ-logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.08));
+  transition: transform 0.2s ease;
+}
+.univ-logo-img:hover {
+  transform: scale(1.05);
+}
+
+.brand-orb {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.theme-fc26 .brand-orb {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+
+.theme-mk1 .brand-orb {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+/* Botones con estilo temático */
+.btn-game-primary {
+  font-weight: 700;
+  font-size: 0.9rem;
+  padding: 0.6rem 1.3rem;
+  border-radius: 10px;
+  border: none;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.theme-fc26 .btn-game-primary {
+  background: #0284c7;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+}
+.theme-fc26 .btn-game-primary:hover {
+  background: #0369a1;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.theme-mk1 .btn-game-primary {
+  background: #dc2626;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+.theme-mk1 .btn-game-primary:hover {
+  background: #b91c1c;
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+/* Badges de Puntos */
+.badge-score-pill {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  font-weight: 800;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+}
+
+.theme-fc26 .badge-score-pill {
+  background: #e0f2fe;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+}
+
+.theme-mk1 .badge-score-pill {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+}
+
+/* Tablas Claras */
+.table-light-custom {
+  color: #334155;
+  background: #ffffff;
+}
+
+.table-light-custom th {
+  background: #f8fafc;
+  color: #64748b;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e2e8f0;
+  padding: 0.9rem 0.8rem;
+}
+
+.table-light-custom td {
+  padding: 0.85rem 0.8rem;
+  vertical-align: middle;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.table-light-custom tr:hover td {
+  background: #f8fafc;
+}
+
+.table-light-custom tr.is-qualified td {
+  background: rgba(240, 253, 244, 0.6);
+}
+
+.table-light-custom tr.is-qualified td:first-child {
+  border-left: 4px solid #10b981;
+}
+
+/* ==============================================================================
+   ÁRBOL DE ELIMINATORIAS (BRACKET EN TEMA CLARO)
+   ============================================================================== */
+.bracket-viewport {
+  overflow-x: auto;
+  padding: 1.5rem 0.5rem;
+  width: 100%;
+}
+
+.bracket-tree {
+  display: flex;
+  gap: 2.2rem;
+  align-items: stretch;
+  min-width: 950px;
+}
+
+.bracket-column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  min-width: 270px;
+  flex: 1;
+}
+
+.bracket-col-title {
+  text-align: center;
+  padding: 0.65rem 1rem;
+  border-radius: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.84rem;
+  margin-bottom: 1.2rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  color: #475569;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.theme-fc26 .bracket-col-title {
+  border-left: 4px solid var(--fc-primary);
+  color: #0369a1;
+}
+
+.theme-mk1 .bracket-col-title {
+  border-left: 4px solid var(--mk-primary);
+  color: #991b1b;
+}
+
+/* Tarjeta del Partido (Match Card) */
+.match-card-light {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  margin: 0.85rem 0;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.match-card-light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+.theme-fc26 .match-card-light:hover {
+  border-color: #7dd3fc;
+}
+
+.theme-mk1 .match-card-light:hover {
+  border-color: #fca5a5;
+}
+
+.match-card-light.is-completed {
+  border-left: 4px solid #10b981;
+}
+
+.match-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.match-player-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.88rem;
+}
+
+.match-player-row:last-of-type {
+  border-bottom: none;
+}
+
+.match-player-row.winner-row {
+  background: #f0fdf4;
+  font-weight: 700;
+  color: #166534;
+}
+
+.match-player-row .player-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-seed-badge {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.35rem;
+  border-radius: 4px;
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.player-score-badge {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  font-size: 0.95rem;
+  min-width: 26px;
+  text-align: center;
+  padding: 0.1rem 0.4rem;
+  border-radius: 6px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  color: #1e293b;
+}
+
+.match-footer-action {
+  padding: 0.45rem 0.75rem;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  text-align: center;
+}
+
+/* Banner de Campeón en Tema Claro */
+.champion-podium {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 2px solid #f59e0b;
+  border-radius: 16px;
+  padding: 1.6rem;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.2);
+}
+
+.champion-podium h3 {
+  color: #92400e;
+  font-weight: 900;
+  text-transform: uppercase;
+  margin-bottom: 0.25rem;
+}
+
+.champion-podium h2 {
+  color: #1e293b;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+/* ==============================================================================
+   SHOWDOWN DE LA GRAN FINAL Y EFECTOS DE AUDIO
+   ============================================================================== */
+.grand-final-banner-mk1 {
+  background: linear-gradient(135deg, #180000 0%, #3f0707 50%, #7f1d1d 100%);
+  border-left: 6px solid #ef4444 !important;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(220, 38, 38, 0.35);
+  animation: glow-pulse-mk1 3s infinite alternate;
+}
+
+@keyframes glow-pulse-mk1 {
+  0% { box-shadow: 0 8px 24px rgba(220, 38, 38, 0.25); }
+  100% { box-shadow: 0 12px 36px rgba(220, 38, 38, 0.5); }
+}
+
+.grand-final-banner-fc26 {
+  background: linear-gradient(135deg, #031024 0%, #0c2556 50%, #1e3a8a 100%);
+  border-left: 6px solid #3b82f6 !important;
+  border-radius: 18px;
+  box-shadow: 0 10px 30px rgba(2, 132, 199, 0.35);
+  animation: glow-pulse-fc26 3s infinite alternate;
+}
+
+@keyframes glow-pulse-fc26 {
+  0% { box-shadow: 0 8px 24px rgba(2, 132, 199, 0.25); }
+  100% { box-shadow: 0 12px 36px rgba(2, 132, 199, 0.5); }
+}
+
+.match-card-light.is-grand-final-showdown {
+  border: 2px solid #f59e0b !important;
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.25) !important;
+}
+
+/* Equalizer Bars Animation */
+.audio-equalizer {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.audio-equalizer span {
+  display: block;
+  width: 3px;
+  background-color: currentColor;
+  border-radius: 2px;
+  animation: eq-bounce 1s infinite ease-in-out alternate;
+}
+
+.audio-equalizer span:nth-child(1) { height: 60%; animation-delay: 0.1s; }
+.audio-equalizer span:nth-child(2) { height: 100%; animation-delay: 0.3s; }
+.audio-equalizer span:nth-child(3) { height: 40%; animation-delay: 0.2s; }
+.audio-equalizer span:nth-child(4) { height: 80%; animation-delay: 0.4s; }
+
+@keyframes eq-bounce {
+  0% { height: 25%; }
+  100% { height: 100%; }
+}
+
+.audio-equalizer.paused span {
+  animation-play-state: paused;
+  height: 35% !important;
+}
+
+/* ==============================================================================
+   MODAL DE GRAN FINAL: MORTAL KOMBAT 1 (HUD DE PELEA & COMBATE ROUND A ROUND)
+   ============================================================================== */
+.modal-final-mk1 .modal-content {
+  background: radial-gradient(circle at 50% 10%, #3b0a0a 0%, #170303 65%, #080000 100%) !important;
+  border: 2px solid #ef4444 !important;
+  border-radius: 24px !important;
+  box-shadow: 0 0 50px rgba(239, 68, 68, 0.5), inset 0 0 40px rgba(185, 28, 28, 0.4) !important;
+  color: #ffffff;
+  overflow: hidden;
+}
+
+.modal-final-mk1 .modal-header {
+  border-bottom: 1px solid rgba(239, 68, 68, 0.35);
+  background: linear-gradient(90deg, rgba(80, 10, 10, 0.8) 0%, rgba(20, 5, 5, 0.9) 50%, rgba(80, 10, 10, 0.8) 100%);
+}
+
+.mk1-hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mk1-healthbar-container {
+  flex: 1;
+}
+
+.mk1-healthbar {
+  height: 14px;
+  background: #2a0808;
+  border: 1px solid #7f1d1d;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.8);
+  position: relative;
+}
+
+.mk1-healthbar-fill-p1 {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #ef4444 0%, #f59e0b 80%, #ffffff 100%);
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
+}
+
+.mk1-healthbar-fill-p2 {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #ffffff 0%, #06b6d4 20%, #3b82f6 100%);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+}
+
+.mk1-medallions {
+  display: inline-flex;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.mk1-medallion {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #551111;
+  background: #1a0505;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.mk1-medallion.active-p1 {
+  background: #ef4444;
+  border-color: #fef08a;
+  box-shadow: 0 0 12px #ef4444;
+}
+
+.mk1-medallion.active-p2 {
+  background: #3b82f6;
+  border-color: #93c5fd;
+  box-shadow: 0 0 12px #3b82f6;
+}
+
+.modal-final-mk1 .fighter-card-box {
+  background: rgba(30, 8, 8, 0.85);
+  border: 2px solid rgba(239, 68, 68, 0.35);
+  border-radius: 18px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.modal-final-mk1 .fighter-card-box.selected-winner {
+  border: 2px solid #eab308 !important;
+  background: rgba(55, 15, 15, 0.95);
+  box-shadow: 0 0 35px rgba(234, 179, 8, 0.6) !important;
+}
+
+.mk1-round-row {
+  background: rgba(25, 6, 6, 0.7);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: 14px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.6rem;
+  transition: all 0.25s ease;
+}
+
+.mk1-round-row:hover {
+  border-color: rgba(239, 68, 68, 0.6);
+  background: rgba(35, 8, 8, 0.85);
+}
+
+.mk1-round-btn {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.mk1-round-btn.active-p1 {
+  background: linear-gradient(135deg, #b91c1c 0%, #ef4444 100%) !important;
+  border-color: #fef08a !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.7);
+}
+
+.mk1-round-btn.active-p2 {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%) !important;
+  border-color: #bfdbfe !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.7);
+}
+
+.mk1-score-display {
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: #ef4444;
+  text-shadow: 0 0 20px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.4);
+  min-width: 75px;
+  display: inline-block;
+  user-select: none;
+}
+
+.mk1-score-display.player2 {
+  color: #3b82f6;
+  text-shadow: 0 0 20px rgba(59, 130, 246, 0.8), 0 0 40px rgba(59, 130, 246, 0.4);
+}
+
+.mk1-score-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  transition: all 0.2s ease;
+}
+
+.mk1-score-btn:hover {
+  background: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.6);
+  transform: scale(1.05);
+}
+
+.mk1-score-btn.btn-p2 {
+  border-color: rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.1);
+  color: #3b82f6;
+}
+
+.mk1-score-btn.btn-p2:hover {
+  background: #3b82f6;
+  color: #ffffff;
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.6);
+}
+
+.mk1-quick-chip {
+  cursor: pointer;
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  border-radius: 16px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.mk1-quick-chip:hover {
+  background: #ef4444;
+  color: #ffffff;
+  border-color: #ef4444;
+}
+
+.mk1-quick-chip.chip-p2 {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+  color: #93c5fd;
+}
+
+.mk1-quick-chip.chip-p2:hover {
+  background: #3b82f6;
+  color: #ffffff;
+  border-color: #3b82f6;
+}
+
+.mk1-vs-badge {
+  font-size: 2.2rem;
+  font-weight: 900;
+  font-family: var(--font-mono);
+  background: linear-gradient(180deg, #fde047 0%, #ef4444 70%, #991b1b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 15px rgba(239, 68, 68, 0.8));
+  animation: vs-pulse 1.8s infinite ease-in-out alternate;
+}
+
+.btn-mk1-action {
+  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #f59e0b 100%);
+  border: none;
+  color: #ffffff;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 25px rgba(220, 38, 38, 0.5);
+  transition: all 0.25s ease;
+}
+
+.btn-mk1-action:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #fbbf24 100%);
+  box-shadow: 0 0 35px rgba(245, 158, 11, 0.7);
+  transform: scale(1.02);
+  color: #ffffff;
+}
+
+/* ==============================================================================
+   MODAL DE GRAN FINAL: EA SPORTS FC 26 (STADIUM BROADCAST HUD & GOAL METRIC)
+   ============================================================================== */
+.modal-final-fc26 .modal-content {
+  background: radial-gradient(circle at 50% 10%, #031838 0%, #020c1f 60%, #010611 100%) !important;
+  border: 2px solid #00f0ff !important;
+  border-radius: 24px !important;
+  box-shadow: 0 0 50px rgba(0, 240, 255, 0.4), inset 0 0 35px rgba(0, 140, 255, 0.25) !important;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+}
+
+.modal-final-fc26 .modal-header {
+  border-bottom: 1px solid rgba(0, 240, 255, 0.35);
+  background: linear-gradient(90deg, rgba(2, 28, 68, 0.9) 0%, rgba(3, 14, 38, 0.95) 50%, rgba(2, 28, 68, 0.9) 100%);
+}
+
+.fc26-club-box {
+  background: rgba(5, 20, 48, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 18px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.fc26-club-box:hover {
+  border-color: #00f0ff;
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+}
+
+.fc26-club-box.selected-winner {
+  border: 2px solid #00ff87 !important;
+  background: rgba(4, 30, 70, 0.95);
+  box-shadow: 0 0 35px rgba(0, 255, 135, 0.5) !important;
+}
+
+.fc26-score-display {
+  font-family: var(--font-mono);
+  font-weight: 900;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: #00f0ff;
+  text-shadow: 0 0 20px rgba(0, 240, 255, 0.8), 0 0 40px rgba(0, 240, 255, 0.4);
+  min-width: 75px;
+  display: inline-block;
+  user-select: none;
+}
+
+.fc26-goal-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  font-size: 1.4rem;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 240, 255, 0.4);
+  background: rgba(0, 240, 255, 0.1);
+  color: #00f0ff;
+  transition: all 0.2s ease;
+}
+
+.fc26-goal-btn:hover {
+  background: #00f0ff;
+  color: #020b1e;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+  transform: scale(1.05);
+}
+
+.fc26-quick-chip {
+  cursor: pointer;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  color: #7dd3fc;
+  border-radius: 16px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.fc26-quick-chip:hover {
+  background: #00f0ff;
+  color: #020b1e;
+  border-color: #00f0ff;
+}
+
+.fc26-diff-badge {
+  background: linear-gradient(135deg, rgba(0, 255, 135, 0.15) 0%, rgba(0, 240, 255, 0.2) 100%);
+  border: 1px solid #00ff87;
+  color: #00ff87;
+  font-family: var(--font-mono);
+  font-weight: 800;
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  box-shadow: 0 0 20px rgba(0, 255, 135, 0.2);
+}
+
+.fc26-penalties-section {
+  background: rgba(2, 14, 38, 0.95);
+  border: 2px dashed #f59e0b;
+  border-radius: 16px;
+  padding: 1rem;
+  animation: border-glow-penalties 2s infinite alternate;
+}
+
+@keyframes border-glow-penalties {
+  0% { box-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+  100% { box-shadow: 0 0 25px rgba(245, 158, 11, 0.6); }
+}
+
+.btn-fc26-action {
+  background: linear-gradient(135deg, #0284c7 0%, #00f0ff 50%, #00ff87 100%);
+  border: none;
+  color: #020b1e;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.5);
+  transition: all 0.25s ease;
+}
+
+.btn-fc26-action:hover {
+  background: linear-gradient(135deg, #00f0ff 0%, #00ff87 100%);
+  box-shadow: 0 0 35px rgba(0, 255, 135, 0.8);
+  transform: scale(1.02);
+  color: #020b1e;
+}
+
+/* ==============================================================================
+   MODAL DE CELEBRACIÓN DEL CAMPEÓN CON FUEGOS ARTIFICIALES
+   ============================================================================== */
+.modal-champion-celebration .modal-content {
+  background: rgba(5, 7, 15, 0.92) !important;
+  backdrop-filter: blur(15px);
+  border: 2px solid #eab308 !important;
+  border-radius: 28px !important;
+  box-shadow: 0 0 70px rgba(234, 179, 8, 0.5) !important;
+  color: #ffffff;
+  overflow: hidden;
+  position: relative;
+}
+
+.celebration-trophy-anim {
+  font-size: 5rem;
+  display: inline-block;
+  animation: trophy-float 2.5s infinite ease-in-out alternate;
+  filter: drop-shadow(0 0 25px rgba(234, 179, 8, 0.8));
+}
+
+@keyframes trophy-float {
+  0% { transform: translateY(0) rotate(-4deg); }
+  100% { transform: translateY(-12px) rotate(4deg); }
+}
+
+.glow-champion-name {
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #ffffff 0%, #fef08a 50%, #eab308 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 20px rgba(234, 179, 8, 0.7));
+}
+
+#canvasCelebrationFireworks {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 1060;
+}
+
+
