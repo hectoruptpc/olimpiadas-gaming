@@ -590,7 +590,7 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
           </div>
 
           <!-- Banner de Puntos y Racha Otorgada -->
-          <div class="p-3 rounded-4 mb-2 border" id="mk1PointsBanner" style="background: rgba(220, 38, 38, 0.12); border-color: #ef4444 !important;">
+          <div class="p-3 rounded-4 mb-2 border" id="mk1PointsBanner" style="background: rgba(22, 3, 3, 0.75); border: 2px solid rgba(239, 68, 68, 0.5) !important; backdrop-filter: blur(8px); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);">
             <div class="row align-items-center">
               <div class="col-md-7">
                 <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
@@ -1268,6 +1268,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const celebModalEl = document.getElementById('modalChampionCelebration');
     if (!celebModalEl) return;
+
+    celebModalEl.classList.remove('celebration-mk1', 'celebration-fc26');
+    celebModalEl.classList.add(cat === 'mk1' ? 'celebration-mk1' : 'celebration-fc26');
 
     // Actualizar datos del campeón
     document.getElementById('celebChampionName').textContent = champion.name;
