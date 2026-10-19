@@ -102,6 +102,43 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
         </div>
       </div>
     </div>
+
+    <!-- BARRA DE NARRADOR OFICIAL DE ELIMINATORIAS -->
+    <div class="col-12 mt-3 pt-3 border-top d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-dark border border-warning text-warning px-3 py-2 font-monospace d-flex align-items-center gap-2" id="badgeNarrator">
+          <i class="bi bi-mic-fill text-danger fs-6" id="iconNarratorMic"></i>
+          <span>🎙️ Narrador Oficial en Vivo: <strong class="text-white">Activado</strong></span>
+        </span>
+        <span class="small text-muted font-monospace d-none d-md-inline">
+          (Narra en voz alta al instante quién avanza a Cuartos, Semifinales y Gran Final)
+        </span>
+      </div>
+      <div class="d-flex gap-2">
+        <button type="button" class="btn btn-outline-warning btn-sm fw-bold px-3 py-1 shadow-sm" id="btnTestVoice">
+          <i class="bi bi-volume-up-fill me-1"></i> Probar Narrador
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm px-3 py-1" id="btnToggleVoiceMute" title="Silenciar / Activar voz del narrador">
+          <i class="bi bi-bell-fill me-1" id="iconVoiceMute"></i> <span id="textVoiceMute">Silenciar</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BANNER FLOTANTE DE NARRACIÓN EN VIVO (HUD) -->
+<div id="liveNarrationBanner" class="live-narration-hud" style="display: none;">
+  <div class="narration-pill shadow-lg d-flex align-items-center gap-3">
+    <div class="narration-mic-icon">
+      <i class="bi bi-mic-fill"></i>
+    </div>
+    <div>
+      <div class="narration-label">🎙️ NARRADOR OFICIAL DE ELIMINATORIAS</div>
+      <div class="narration-text" id="liveNarrationText">¡El ganador avanza a la siguiente ronda!</div>
+    </div>
+    <div class="audio-equalizer ms-2">
+      <span></span><span></span><span></span><span></span>
+    </div>
   </div>
 </div>
 
@@ -352,29 +389,65 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
                 <!-- Botón de Acción -->
                 <div class="match-footer-action">
                   <?php if ($canRecord): ?>
-                    <button 
-                      class="btn btn-sm <?php echo $isCompleted ? 'btn-outline-secondary' : 'btn-game-primary'; ?> w-100 btn-open-match-modal py-1"
-                      data-match-id="<?php echo $m['id']; ?>"
-                      data-category="<?php echo $category; ?>"
-                      data-round-name="<?php echo htmlspecialchars($rData['name']); ?>"
-                      data-match-number="<?php echo $m['match_number']; ?>"
-                      data-p1-id="<?php echo $p1['id']; ?>"
-                      data-p1-name="<?php echo htmlspecialchars($p1['name']); ?>"
-                      data-p1-alias="<?php echo htmlspecialchars($p1['alias'] ?? ''); ?>"
-                      data-p1-score="<?php echo $m['score1']; ?>"
-                      data-p2-id="<?php echo $p2['id']; ?>"
-                      data-p2-name="<?php echo htmlspecialchars($p2['name']); ?>"
-                      data-p2-alias="<?php echo htmlspecialchars($p2['alias'] ?? ''); ?>"
-                      data-p2-score="<?php echo $m['score2']; ?>"
-                      data-winner-id="<?php echo $m['winner_id']; ?>"
-                      data-is-final="<?php echo $isFinalMatch ? '1' : '0'; ?>"
-                    >
-                      <?php if ($isCompleted): ?>
-                        <i class="bi bi-pencil-square me-1"></i> Modificar Marcador
-                      <?php else: ?>
-                        <i class="bi bi-trophy-fill me-1"></i> <?php echo $isFinalMatch ? '¡Jugar Gran Final!' : 'Cargar Marcador y Avanzar'; ?>
+                    <?php
+                    $cardNarration = '';
+                    if ($isCompleted && !empty($m['winner_id'])) {
+                        $wObj = ($m['winner_id'] == $m['player1_id']) ? $p1 : $p2;
+                        $wName = $wObj ? $wObj['name'] : 'El competidor';
+                        if (!empty($m['next_match_id'])) {
+                            $lowerR = mb_strtolower($rData['name'] ?? '', 'UTF-8');
+                            if (str_contains($lowerR, 'octavo')) {
+                                $cardNarration = "¡{$wName} avanza a cuartos de final!";
+                            } elseif (str_contains($lowerR, 'cuarto')) {
+                                $cardNarration = "¡{$wName} avanza a semifinales!";
+                            } elseif (str_contains($lowerR, 'semifinal')) {
+                                $cardNarration = "¡{$wName} avanza a la gran final!";
+                            } else {
+                                $cardNarration = "¡{$wName} avanza a la siguiente ronda!";
+                            }
+                        } elseif ($isFinalMatch) {
+                            $cardNarration = $isFC26 
+                                ? "¡Gloria Eterna! ¡{$wName} se corona como el Campeón de la UEFA Champions League!" 
+                                : "¡Flawless Victory! ¡{$wName} se corona como el Campeón Supremo de Mortal Kombat 1!";
+                        }
+                    }
+                    ?>
+                    <div class="d-flex gap-1 align-items-center">
+                      <button 
+                        class="btn btn-sm <?php echo $isCompleted ? 'btn-outline-secondary' : 'btn-game-primary'; ?> flex-grow-1 btn-open-match-modal py-1"
+                        data-match-id="<?php echo $m['id']; ?>"
+                        data-category="<?php echo $category; ?>"
+                        data-round-name="<?php echo htmlspecialchars($rData['name']); ?>"
+                        data-match-number="<?php echo $m['match_number']; ?>"
+                        data-p1-id="<?php echo $p1['id']; ?>"
+                        data-p1-name="<?php echo htmlspecialchars($p1['name']); ?>"
+                        data-p1-alias="<?php echo htmlspecialchars($p1['alias'] ?? ''); ?>"
+                        data-p1-score="<?php echo $m['score1']; ?>"
+                        data-p2-id="<?php echo $p2['id']; ?>"
+                        data-p2-name="<?php echo htmlspecialchars($p2['name']); ?>"
+                        data-p2-alias="<?php echo htmlspecialchars($p2['alias'] ?? ''); ?>"
+                        data-p2-score="<?php echo $m['score2']; ?>"
+                        data-winner-id="<?php echo $m['winner_id']; ?>"
+                        data-is-final="<?php echo $isFinalMatch ? '1' : '0'; ?>"
+                      >
+                        <?php if ($isCompleted): ?>
+                          <i class="bi bi-pencil-square me-1"></i> Modificar Marcador
+                        <?php else: ?>
+                          <i class="bi bi-trophy-fill me-1"></i> <?php echo $isFinalMatch ? '¡Jugar Gran Final!' : 'Cargar Marcador y Avanzar'; ?>
+                        <?php endif; ?>
+                      </button>
+
+                      <?php if ($isCompleted && !empty($cardNarration)): ?>
+                        <button 
+                          type="button" 
+                          class="btn btn-sm btn-outline-warning py-1 px-2 btn-speak-advance" 
+                          data-narration="<?php echo htmlspecialchars($cardNarration); ?>" 
+                          title="Escuchar al narrador: <?php echo htmlspecialchars($cardNarration); ?>"
+                        >
+                          <i class="bi bi-mic-fill"></i>
+                        </button>
                       <?php endif; ?>
-                    </button>
+                    </div>
                   <?php else: ?>
                     <button class="btn btn-sm btn-light w-100 text-muted py-1" disabled>
                       <i class="bi bi-lock-fill me-1"></i> Esperando Rivales
@@ -1208,6 +1281,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   window.playTournamentAudio = startPlayback;
   window.pauseTournamentAudio = pausePlayback;
+  window.duckTournamentAudio = function(duck = true) {
+    const targetVol = duck ? 0.25 : 1.0;
+    if (audioLoop) audioLoop.volume = targetVol;
+    if (audio1) audio1.volume = targetVol;
+  };
 
   if (btnToggle) {
     btnToggle.addEventListener('click', (e) => {

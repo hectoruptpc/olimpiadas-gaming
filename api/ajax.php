@@ -839,6 +839,7 @@ try {
 
             // Avanzar automáticamente el ganador
             $finalistsArrivedNow = false;
+            $nextRoundName = '';
             if (!empty($match['next_match_id']) && !empty($match['next_match_slot'])) {
                 $nextId = $match['next_match_id'];
                 $slot = $match['next_match_slot'];
@@ -850,38 +851,74 @@ try {
                 }
                 $stmtNext->execute([$winner_id, $nextId]);
 
-                // Comprobar si este avance completó la llegada de AMBOS finalistas a la Gran Final
-                $stmtFinalCheck = $pdo->prepare("SELECT next_match_id, player1_id, player2_id FROM bracket_matches WHERE id = ?");
-                $stmtFinalCheck->execute([$nextId]);
-                $targetMatch = $stmtFinalCheck->fetch();
-                if ($targetMatch && empty($targetMatch['next_match_id']) && !empty($targetMatch['player1_id']) && !empty($targetMatch['player2_id'])) {
-                    $finalistsArrivedNow = true;
+                // Comprobar la siguiente ronda
+                $stmtNextMatch = $pdo->prepare("SELECT next_match_id, player1_id, player2_id, round_name FROM bracket_matches WHERE id = ?");
+                $stmtNextMatch->execute([$nextId]);
+                $targetMatch = $stmtNextMatch->fetch();
+                if ($targetMatch) {
+                    $nextRoundName = $targetMatch['round_name'] ?? '';
+                    if (empty($targetMatch['next_match_id']) && !empty($targetMatch['player1_id']) && !empty($targetMatch['player2_id'])) {
+                        $finalistsArrivedNow = true;
+                    }
                 }
             }
+
+            // Consultar datos del ganador
+            $stmtWinner = $pdo->prepare("SELECT id, name, alias FROM participants WHERE id = ?");
+            $stmtWinner->execute([$winner_id]);
+            $winnerData = $stmtWinner->fetch(PDO::FETCH_ASSOC);
+            $winnerName = $winnerData ? $winnerData['name'] : 'El competidor';
 
             $category = $match['category'] ?? 'fc26';
             $isFinal = empty($match['next_match_id']);
             $championData = null;
             $msg = 'Marcador registrado y ganador avanzado exitosamente.';
-            if ($isFinal && $winner_id > 0) {
-                $stmtChamp = $pdo->prepare("SELECT id, name, alias, category FROM participants WHERE id = ?");
-                $stmtChamp->execute([$winner_id]);
-                $championData = $stmtChamp->fetch(PDO::FETCH_ASSOC);
 
-                $msg = ($category === 'mk1') 
-                    ? "¡FLAWLESS VICTORY! ¡{$championData['name']} ES EL CAMPEÓN DE MORTAL KOMBAT 1! 🐉" 
-                    : "¡GLORIA ETERNA! ¡{$championData['name']} ES EL CAMPEÓN DE LA UEFA CHAMPIONS LEAGUE! ⚽";
+            // Construir locución del narrador oficial
+            $narrationText = '';
+            if ($isFinal) {
+                if ($winner_id > 0) {
+                    $stmtChamp = $pdo->prepare("SELECT id, name, alias, category FROM participants WHERE id = ?");
+                    $stmtChamp->execute([$winner_id]);
+                    $championData = $stmtChamp->fetch(PDO::FETCH_ASSOC);
+
+                    if ($category === 'mk1') {
+                        $narrationText = "¡Flawless Victory! ¡{$winnerName} se corona como el Campeón Supremo de Mortal Kombat 1!";
+                        $msg = "¡FLAWLESS VICTORY! ¡{$winnerName} ES EL CAMPEÓN DE MORTAL KOMBAT 1! 🐉";
+                    } else {
+                        $narrationText = "¡Gloria Eterna! ¡{$winnerName} se corona como el nuevo Campeón de la UEFA Champions League!";
+                        $msg = "¡GLORIA ETERNA! ¡{$winnerName} ES EL CAMPEÓN DE LA UEFA CHAMPIONS LEAGUE! ⚽";
+                    }
+                }
+            } else {
+                $lowerNext = mb_strtolower($nextRoundName, 'UTF-8');
+                $lowerCurrent = mb_strtolower($match['round_name'] ?? '', 'UTF-8');
+                
+                if (str_contains($lowerNext, 'cuarto') || str_contains($lowerCurrent, 'octavo')) {
+                    $narrationText = "¡{$winnerName} avanza a cuartos de final!";
+                } elseif (str_contains($lowerNext, 'semifinal') || str_contains($lowerCurrent, 'cuarto')) {
+                    $narrationText = "¡{$winnerName} avanza a semifinales!";
+                } elseif (str_contains($lowerNext, 'final') || str_contains($lowerCurrent, 'semifinal')) {
+                    $narrationText = "¡{$winnerName} avanza a la gran final!";
+                } else {
+                    $narrationText = !empty($nextRoundName) 
+                        ? "¡{$winnerName} avanza a {$nextRoundName}!" 
+                        : "¡{$winnerName} avanza a la siguiente ronda!";
+                }
             }
 
             jsonResponse(true, $msg, [
                 'match_id' => $match_id,
                 'winner_id' => $winner_id,
+                'winner_name' => $winnerName,
                 'is_final' => $isFinal,
                 'finalists_arrived' => $finalistsArrivedNow,
                 'champion' => $championData,
                 'score1' => $score1,
                 'score2' => $score2,
-                'category' => $category
+                'category' => $category,
+                'next_round_name' => $nextRoundName,
+                'narration_text' => $narrationText
             ]);
             break;
 

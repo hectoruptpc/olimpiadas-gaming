@@ -237,6 +237,198 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ============================================================================
+  // SISTEMA DE NARRACIÓN POR VOZ OFICIAL (WEB SPEECH SYNTHESIS)
+  // ============================================================================
+  let speechVoices = [];
+  let preferredSpanishVoice = null;
+
+  function loadSpeechVoices() {
+    if (!('speechSynthesis' in window)) return;
+    try {
+      speechVoices = window.speechSynthesis.getVoices() || [];
+      if (speechVoices.length > 0) {
+        preferredSpanishVoice = 
+          speechVoices.find(v => v.lang === 'es-419') ||
+          speechVoices.find(v => v.lang === 'es-MX') ||
+          speechVoices.find(v => v.lang === 'es-US') ||
+          speechVoices.find(v => v.lang.startsWith('es') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Sabina') || v.name.includes('Alvaro') || v.name.includes('Jorge'))) ||
+          speechVoices.find(v => v.lang.startsWith('es')) ||
+          null;
+      }
+    } catch (e) {
+      console.warn('Error loading speech voices:', e);
+    }
+  }
+
+  loadSpeechVoices();
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = loadSpeechVoices;
+  }
+
+  let narrationTimer = null;
+  function showLiveNarrationBanner(text) {
+    const banner = document.getElementById('liveNarrationBanner');
+    const labelText = document.getElementById('liveNarrationText');
+    if (!banner || !labelText) return;
+
+    labelText.textContent = text;
+    banner.style.display = 'block';
+    banner.classList.remove('animate__fadeOutDown');
+    banner.classList.add('animate__fadeInUp');
+
+    if (narrationTimer) clearTimeout(narrationTimer);
+  }
+
+  function hideLiveNarrationBanner(delay = 1800) {
+    const banner = document.getElementById('liveNarrationBanner');
+    if (!banner) return;
+    if (narrationTimer) clearTimeout(narrationTimer);
+    narrationTimer = setTimeout(() => {
+      banner.classList.remove('animate__fadeInUp');
+      banner.classList.add('animate__fadeOutDown');
+      setTimeout(() => {
+        banner.style.display = 'none';
+      }, 500);
+    }, delay);
+  }
+
+  let isNarratorMuted = localStorage.getItem('olimpiadas_narrator_muted') === '1';
+
+  function updateNarratorUI() {
+    const btnMute = document.getElementById('btnToggleVoiceMute');
+    const iconMute = document.getElementById('iconVoiceMute');
+    const textMute = document.getElementById('textVoiceMute');
+    const badge = document.getElementById('badgeNarrator');
+
+    if (iconMute) {
+      iconMute.className = isNarratorMuted ? 'bi bi-bell-slash-fill text-danger me-1' : 'bi bi-bell-fill me-1';
+    }
+    if (textMute) {
+      textMute.textContent = isNarratorMuted ? 'Activar Voz' : 'Silenciar';
+    }
+    if (badge) {
+      if (isNarratorMuted) {
+        badge.className = 'badge bg-dark border border-secondary text-secondary px-3 py-2 font-monospace d-flex align-items-center gap-2';
+        badge.innerHTML = '<i class="bi bi-mic-mute-fill text-secondary fs-6"></i><span>🎙️ Narrador Oficial: <strong class="text-secondary">Silenciado</strong></span>';
+      } else {
+        badge.className = 'badge bg-dark border border-warning text-warning px-3 py-2 font-monospace d-flex align-items-center gap-2';
+        badge.innerHTML = '<i class="bi bi-mic-fill text-danger fs-6" id="iconNarratorMic"></i><span>🎙️ Narrador Oficial en Vivo: <strong class="text-white">Activado</strong></span>';
+      }
+    }
+  }
+
+  updateNarratorUI();
+
+  const btnToggleVoiceMute = document.getElementById('btnToggleVoiceMute');
+  if (btnToggleVoiceMute) {
+    btnToggleVoiceMute.addEventListener('click', () => {
+      isNarratorMuted = !isNarratorMuted;
+      localStorage.setItem('olimpiadas_narrator_muted', isNarratorMuted ? '1' : '0');
+      updateNarratorUI();
+      showToast(isNarratorMuted ? 'Narrador de eliminatorias silenciado' : 'Narrador de eliminatorias activado', isNarratorMuted ? 'danger' : 'success');
+      if (isNarratorMuted && 'speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    });
+  }
+
+  function speakTournamentNarration(text, onComplete) {
+    if (!text) {
+      if (typeof onComplete === 'function') onComplete();
+      return;
+    }
+
+    showLiveNarrationBanner(text);
+
+    if (isNarratorMuted || !('speechSynthesis' in window)) {
+      hideLiveNarrationBanner(2500);
+      if (typeof onComplete === 'function') {
+        setTimeout(onComplete, 800);
+      }
+      return;
+    }
+
+    try {
+      window.speechSynthesis.cancel();
+    } catch (e) {}
+
+    // Atenuar música de fondo para que la voz se escuche clara
+    if (typeof window.duckTournamentAudio === 'function') {
+      window.duckTournamentAudio(true);
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    if (!preferredSpanishVoice) {
+      loadSpeechVoices();
+    }
+    if (preferredSpanishVoice) {
+      utterance.voice = preferredSpanishVoice;
+    }
+    utterance.lang = preferredSpanishVoice ? preferredSpanishVoice.lang : 'es-ES';
+    utterance.pitch = 1.05;
+    utterance.rate = 1.02;
+    utterance.volume = 1.0;
+
+    let callbackCalled = false;
+    let safetyTimeout = null;
+
+    const finishSpeech = () => {
+      if (callbackCalled) return;
+      callbackCalled = true;
+      if (safetyTimeout) clearTimeout(safetyTimeout);
+      if (typeof window.duckTournamentAudio === 'function') {
+        window.duckTournamentAudio(false);
+      }
+      hideLiveNarrationBanner(1200);
+      if (typeof onComplete === 'function') {
+        onComplete();
+      }
+    };
+
+    utterance.onend = finishSpeech;
+    utterance.onerror = (err) => {
+      console.warn('SpeechSynthesis event error:', err);
+      finishSpeech();
+    };
+
+    safetyTimeout = setTimeout(finishSpeech, 6000);
+
+    try {
+      window.speechSynthesis.speak(utterance);
+    } catch (err) {
+      console.warn('SpeechSynthesis speak failed:', err);
+      finishSpeech();
+    }
+  }
+
+  window.speakTournamentNarration = speakTournamentNarration;
+
+  const btnTestVoice = document.getElementById('btnTestVoice');
+  if (btnTestVoice) {
+    btnTestVoice.addEventListener('click', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const cat = urlParams.get('category') || 'fc26';
+      const sampleText = (cat === 'mk1')
+        ? '¡Héctor Martínez avanza a semifinales en Mortal Kombat 1!'
+        : '¡Carlos Mendoza avanza a la gran final de la UEFA Champions League!';
+      
+      showToast('Reproduciendo locución de prueba...', 'success');
+      speakTournamentNarration(sampleText, null);
+    });
+  }
+
+  // Delegación para botón de reproducir locución en las tarjetas (.btn-speak-advance)
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-speak-advance');
+    if (!btn) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const narrationText = btn.getAttribute('data-narration');
+    if (narrationText) {
+      speakTournamentNarration(narrationText, null);
+    }
+  });
+
   // ============================================================================
   // 3. REGISTRO MANUAL DE RESULTADOS Y AVANCE DE GANADOR (RONDAS PREVIAS Y FINAL)
   // ============================================================================
@@ -719,8 +911,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.success) {
           showToast(data.message, 'success');
           if (modalMatch) modalMatch.hide();
-          const delay = (data.data && data.data.finalists_arrived) ? 1400 : 800;
-          setTimeout(() => location.reload(), delay);
+
+          const narrationText = data.data && data.data.narration_text;
+          if (narrationText) {
+            speakTournamentNarration(narrationText, () => {
+              const delay = (data.data && data.data.finalists_arrived) ? 1200 : 400;
+              setTimeout(() => location.reload(), delay);
+            });
+          } else {
+            const delay = (data.data && data.data.finalists_arrived) ? 1400 : 800;
+            setTimeout(() => location.reload(), delay);
+          }
         } else {
           showToast(data.message, 'danger');
         }
@@ -755,6 +956,11 @@ document.addEventListener('DOMContentLoaded', () => {
           showToast(data.message, 'success');
           if (modalFinalMK1) modalFinalMK1.hide();
           window.__finalMatchCompleted = true;
+
+          const narrationText = data.data && data.data.narration_text;
+          if (narrationText) {
+            speakTournamentNarration(narrationText, null);
+          }
 
           if (data.data && data.data.champion && typeof window.triggerChampionCelebration === 'function') {
             window.triggerChampionCelebration(data.data.champion, 'mk1', data.data.score1, data.data.score2);
@@ -791,6 +997,11 @@ document.addEventListener('DOMContentLoaded', () => {
           showToast(data.message, 'success');
           if (modalFinalFC26) modalFinalFC26.hide();
           window.__finalMatchCompleted = true;
+
+          const narrationText = data.data && data.data.narration_text;
+          if (narrationText) {
+            speakTournamentNarration(narrationText, null);
+          }
 
           if (data.data && data.data.champion && typeof window.triggerChampionCelebration === 'function') {
             window.triggerChampionCelebration(data.data.champion, 'fc26', data.data.score1, data.data.score2);
