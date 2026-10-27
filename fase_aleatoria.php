@@ -91,8 +91,8 @@ $halfGroup = (int)($bracketSize / 2);
             <span>🐉</span> REGLAS DE PUNTUACIÓN MORTAL KOMBAT 1:
           </div>
           <div class="text-secondary">
-            <strong>Ganadores:</strong> Se ordenan por <strong>Racha</strong> (2-0 consecutivo supera a 2-1) y <strong>menor tiempo de combate</strong> en segundos (victoria más rápida).<br>
-            <strong>Perdedores:</strong> Para los que pierdan, <strong>van arriba los que hayan tenido mayor tiempo de combate en ser derrotados</strong> (mayor resistencia).
+            <strong>Ganadores:</strong> Se ordenan por <strong>Racha pts</strong> (2-0 otorga 2 pts y supera a 2-1 que otorga 1 pt) y <strong>menor tiempo de combate</strong> en segundos (victoria más rápida).<br>
+            <strong>Mejor Perdedor (Repesca):</strong> Quien haya ganado al menos 1 round (derrota <strong>1-2</strong> en combate 2-1) <strong>es superior al de 2-0 aunque este último tenga más tiempo</strong>. En igualdad de rounds ganados, desempata el <strong>mayor tiempo de combate</strong>.
           </div>
         </div>
       <?php endif; ?>
@@ -211,7 +211,7 @@ $halfGroup = (int)($bracketSize / 2);
       <h6 class="fw-bold mb-1">Cupos de Repesca para Llave de 16 (Octavos de Final):</h6>
       <p class="mb-0 small text-dark">
         Hay <strong><?php echo $winnerCount; ?> ganadores</strong>. Para armar una llave de 16 faltan <strong><?php echo (16 - $winnerCount); ?> cupo(s)</strong>.
-        El sistema asignará el cupo de repesca al <strong>Mejor Perdedor</strong> (en MK1: <strong>mayor tiempo de combate</strong>; en FC26: <strong>mejor DG</strong>), o puedes elegir quién recibe el cupo en el modal de llaves.
+        El sistema asignará el cupo de repesca al <strong>Mejor Perdedor</strong> (en MK1: <strong>1º quien ganó 1 round [1-2 > 0-2]</strong> y 2º mayor tiempo; en FC26: <strong>mejor DG</strong>), o puedes elegir quién recibe el cupo en el modal de llaves.
       </p>
     </div>
   </div>
@@ -428,7 +428,7 @@ $halfGroup = (int)($bracketSize / 2);
             <?php if ($isFC26): ?>
               Orden oficial: Diferencia de Goles (DG) &bull; Goles a Favor (GF)
             <?php else: ?>
-              Ganadores: Racha &bull; Menor Tiempo | Perdedores: Mayor tiempo de combate
+              Ganadores: Racha pts &bull; Menor Tiempo | Perdedores: 1º Haber ganado 1 round (1-2 > 0-2) &bull; 2º Mayor Tiempo
             <?php endif; ?>
           </small>
         </div>
@@ -472,10 +472,10 @@ $halfGroup = (int)($bracketSize / 2);
                   <th class="text-center" style="width: 55px;" title="Puntos = Diferencia de Goles">DG</th>
                   <th class="text-center" style="width: 140px;">Estado</th>
                 <?php else: ?>
-                  <!-- MK1 EXACTO: Racha y Segundos (Sin PJ, Sin 2-0 suelto, Sin PTS) -->
-                  <th class="text-center" style="width: 85px;" title="Racha de Rounds: 2-0 supera a 2-1">Racha</th>
+                  <!-- MK1: Racha pts, Segundos, Estado -->
+                  <th class="text-center" style="width: 110px;" title="Racha de Rounds y Puntos: 2-0 (+2 pts) supera a 2-1 (+1 pt)">Racha pts</th>
                   <th class="text-center" style="width: 80px;" title="Tiempo de Combate en Segundos">Segundos</th>
-                  <th class="text-center" style="width: 150px;">Estado</th>
+                  <th class="text-center" style="width: 155px;">Estado</th>
                 <?php endif; ?>
               </tr>
             </thead>
@@ -564,12 +564,16 @@ $halfGroup = (int)($bracketSize / 2);
                     </td>
 
                   <?php else: ?>
-                    <!-- MORTAL KOMBAT 1: Racha, Segundos, Estado (Sin PJ, Sin 2-0, Sin PTS) -->
+                    <!-- MORTAL KOMBAT 1: Racha pts, Segundos, Estado -->
                     <td class="text-center font-monospace">
                       <?php if ($isWinner): ?>
-                        <span class="fw-bold text-success"><?php echo htmlspecialchars($p['racha_label']); ?></span>
+                        <span class="fw-bold <?php echo ($p['racha'] == 2) ? 'text-success' : 'text-warning text-dark'; ?>">
+                          <?php echo htmlspecialchars($p['racha_label']); ?>
+                        </span>
                       <?php elseif ($isLoser): ?>
-                        <span class="text-muted"><?php echo htmlspecialchars($p['racha_label']); ?></span>
+                        <span class="<?php echo ($p['racha'] == 1) ? 'text-primary fw-bold' : 'text-muted'; ?>">
+                          <?php echo htmlspecialchars($p['racha_label']); ?>
+                        </span>
                       <?php else: ?>
                         <span class="text-muted">-</span>
                       <?php endif; ?>
@@ -593,12 +597,12 @@ $halfGroup = (int)($bracketSize / 2);
                           <?php echo $p['rank_in_group']; ?>º Ganador (Fuera)
                         </span>
                       <?php elseif ($isBestLoser): ?>
-                        <span class="badge bg-info bg-opacity-15 text-primary border border-info" style="font-size: 0.68rem;" title="Mayor tiempo de combate: 1º candidato a repesca">
-                          ⭐ Mejor Perdedor (<?php echo $p['seconds']; ?>s)
+                        <span class="badge bg-info bg-opacity-15 text-primary border border-info" style="font-size: 0.68rem;" title="1º Candidato a Cupo de Repesca: ganó 1 round o mayor tiempo">
+                          ⭐ Mejor Perdedor (<?php echo ($p['racha'] == 1 ? '1 rd &bull; ' : '') . $p['seconds'] . 's'; ?>)
                         </span>
                       <?php elseif ($isLoser): ?>
                         <span class="badge bg-light text-muted border" style="font-size: 0.68rem;">
-                          Perdedor #<?php echo $p['rank_in_group']; ?>
+                          Perdedor #<?php echo $p['rank_in_group']; ?> (<?php echo $p['racha_label']; ?>)
                         </span>
                       <?php else: ?>
                         <span class="badge bg-light text-muted border" style="font-size: 0.68rem;">Pendiente</span>
@@ -718,7 +722,7 @@ $halfGroup = (int)($bracketSize / 2);
                 <span class="badge bg-primary">Opcional</span>
               </div>
               <p class="small text-secondary mb-3">
-                Si la llave elegida requiere más competidores que los ganadores disponibles (ej. 15 ganadores para llave de 16, falta 1 cupo), el sistema puede otorgar el cupo automáticamente al <strong>Mejor Perdedor</strong> (en MK1: <strong>mayor tiempo de combate</strong>; en FC26: <strong>mejor DG</strong>), o puedes seleccionar quién recibe el cupo:
+                Si la llave elegida requiere más competidores que los ganadores disponibles (ej. 15 ganadores para llave de 16, falta 1 cupo), el sistema puede otorgar el cupo automáticamente al <strong>Mejor Perdedor</strong> (en MK1: <strong>1º quien ganó 1 round [1-2 > 0-2]</strong> y 2º mayor tiempo; en FC26: <strong>mejor DG</strong>), o puedes seleccionar quién recibe el cupo:
               </p>
 
               <div class="mb-3">
@@ -729,7 +733,7 @@ $halfGroup = (int)($bracketSize / 2);
                     <?php if (!empty($losers[0])): ?>
                       <span class="badge bg-info text-dark ms-1">
                         Recomendado: <?php echo htmlspecialchars($losers[0]['name']); ?> 
-                        (<?php echo $isFC26 ? 'DG ' . $losers[0]['dg'] : $losers[0]['seconds'] . 's de combate'; ?>)
+                        (<?php echo $isFC26 ? 'DG ' . $losers[0]['dg'] : $losers[0]['racha_label'] . ' &bull; ' . $losers[0]['seconds'] . 's'; ?>)
                       </span>
                     <?php endif; ?>
                   </label>
@@ -752,7 +756,7 @@ $halfGroup = (int)($bracketSize / 2);
                         <label class="form-check-label small" for="wc_<?php echo $l['id']; ?>">
                           <strong><?php echo htmlspecialchars($l['name']); ?></strong>
                           <span class="text-muted font-monospace">
-                            (<?php echo $isFC26 ? 'DG: ' . $l['dg'] : $l['seconds'] . 's'; ?>)
+                            (<?php echo $isFC26 ? 'DG: ' . $l['dg'] : $l['racha_label'] . ', ' . $l['seconds'] . 's'; ?>)
                           </span>
                         </label>
                       </div>

@@ -625,7 +625,7 @@ try {
                         $l['seed'] = count($qualified) + 1;
                         $l['seed_type'] = 'Repesca';
                         $reason = ($category === 'mk1') 
-                            ? "Repesca ({$l['seconds']}s)" 
+                            ? "Repesca ({$l['racha_label']}, {$l['seconds']}s)" 
                             : "Repesca (DG {$l['dg']})";
                         $l['seed_label'] = $reason;
                         $qualified[] = $l;
@@ -806,6 +806,21 @@ try {
                 jsonResponse(false, 'Ambos jugadores deben estar definidos antes de registrar el resultado.');
             }
 
+            // Validaciones específicas para Mortal Kombat (solo 2-0 o 2-1, no >= 3 ni 2-2)
+            $category = $match['category'] ?? 'fc26';
+            if ($category === 'mk1') {
+                if ($score1 > 2 || $score2 > 2) {
+                    jsonResponse(false, 'En Mortal Kombat los puntos no pueden llegar a 3 o más. El máximo son 2 rounds ganados.');
+                }
+                if ($score1 === 2 && $score2 === 2) {
+                    jsonResponse(false, 'En Mortal Kombat ambos competidores no pueden tener 2-2. El combate termina al alcanzar 2 rounds ganados.');
+                }
+                $isValidMK = ($score1 === 2 && ($score2 === 0 || $score2 === 1)) || ($score2 === 2 && ($score1 === 0 || $score1 === 1));
+                if (!$isValidMK) {
+                    jsonResponse(false, 'En Mortal Kombat los puntos solo deben ser 2-0 o 2-1 (al mejor de 3 rounds).');
+                }
+            }
+
             if ($winner_id <= 0) {
                 if ($score1 > $score2) {
                     $winner_id = $match['player1_id'];
@@ -821,6 +836,13 @@ try {
             }
 
             $mk_result_type = !empty($_POST['mk_result_type']) ? trim($_POST['mk_result_type']) : null;
+            if ($category === 'mk1') {
+                if (($score1 === 2 && $score2 === 0) || ($score2 === 2 && $score1 === 0)) {
+                    $mk_result_type = '2-0';
+                } elseif (($score1 === 2 && $score2 === 1) || ($score2 === 2 && $score1 === 1)) {
+                    $mk_result_type = '2-1';
+                }
+            }
             $time_seconds = intval($_POST['time_seconds'] ?? 0);
             $penalties1 = isset($_POST['penalties_score1']) && $_POST['penalties_score1'] !== '' ? intval($_POST['penalties_score1']) : null;
             $penalties2 = isset($_POST['penalties_score2']) && $_POST['penalties_score2'] !== '' ? intval($_POST['penalties_score2']) : null;
@@ -886,8 +908,13 @@ try {
                         $narrationText = "¡Flawless Victory! ¡{$winnerName} se corona como el Campeón Supremo de Mortal Kombat 1!";
                         $msg = "¡FLAWLESS VICTORY! ¡{$winnerName} ES EL CAMPEÓN DE MORTAL KOMBAT 1! 🐉";
                     } else {
-                        $narrationText = "¡Gloria Eterna! ¡{$winnerName} se corona como el nuevo Campeón de la UEFA Champions League!";
-                        $msg = "¡GLORIA ETERNA! ¡{$winnerName} ES EL CAMPEÓN DE LA UEFA CHAMPIONS LEAGUE! ⚽";
+                        if ($score1 == $score2 && $penalties1 !== null && $penalties2 !== null) {
+                            $narrationText = "¡Gloria Eterna en la tanda de penaltis! ¡{$winnerName} se corona como el nuevo Campeón de la UEFA Champions League!";
+                            $msg = "¡GLORIA ETERNA POR PENALTIS! ¡{$winnerName} ES EL CAMPEÓN DE LA UEFA CHAMPIONS LEAGUE! ⚽";
+                        } else {
+                            $narrationText = "¡Gloria Eterna! ¡{$winnerName} se corona como el nuevo Campeón de la UEFA Champions League!";
+                            $msg = "¡GLORIA ETERNA! ¡{$winnerName} ES EL CAMPEÓN DE LA UEFA CHAMPIONS LEAGUE! ⚽";
+                        }
                     }
                 }
             } else {

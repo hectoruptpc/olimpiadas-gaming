@@ -448,6 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ============================================================================
   // LÓGICA MODAL GRAN FINAL MORTAL KOMBAT 1 (PUNTOS Y ROUNDS DESDE 0 A 0)
+  // Reglas: Solo 2-0 o 2-1, máximo 2 rounds ganados, sin 2-2 ni 3 o más.
   // ============================================================================
   let mk1P1Data = { id: '', name: '', alias: '' };
   let mk1P2Data = { id: '', name: '', alias: '' };
@@ -489,6 +490,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const badgeStreak = document.getElementById('mk1StreakBadge');
     const txtExpl = document.getElementById('mk1PointsExplanation');
     const txtWinner = document.getElementById('mk1AnnounceWinnerName');
+    const btnSubmitText = document.getElementById('btnSubmitFinalMK1Text');
 
     if (s1 === 0 && s2 === 0) {
       if (inpResultType) inpResultType.value = '';
@@ -500,76 +502,62 @@ document.addEventListener('DOMContentLoaded', () => {
         badgeStreak.className = 'badge bg-secondary text-uppercase font-monospace';
         badgeStreak.textContent = 'COMBATE POR COMENZAR';
       }
-      if (txtExpl) txtExpl.textContent = 'Combate 0 a 0. Sube los puntos de cada luchador con los botones + y - para registrar los rounds ganados.';
+      if (txtExpl) txtExpl.textContent = 'Combate 0 a 0. Sube los rounds con + / - o usa los botones rápidos de victoria 2-0 / 2-1.';
       if (txtWinner) txtWinner.textContent = 'Por definir (0 - 0)';
-    } else if (s1 > s2) {
-      const isClean = (s1 === 2 && s2 === 0);
-      const isTight = (s1 === 2 && s2 === 1);
-      const resultType = isClean ? '2-0' : (isTight ? '2-1' : `${s1}-${s2}`);
-      if (inpResultType) inpResultType.value = resultType;
+      if (btnSubmitText) btnSubmitText.textContent = '¡CORONAR CAMPEÓN DE MORTAL KOMBAT 1!';
+    } else if (s1 === 2 && s2 === 0) {
+      if (inpResultType) inpResultType.value = '2-0';
       if (inpWinner) inpWinner.value = mk1P1Data.id;
-
       if (box1) box1.classList.add('selected-winner');
       if (box2) box2.classList.remove('selected-winner');
-
-      if (isClean) {
-        if (badgePts) badgePts.textContent = '⭐ +2 PUNTOS DE CAMPEONATO';
-        if (badgeStreak) {
-          badgeStreak.className = 'badge bg-danger text-uppercase font-monospace';
-          badgeStreak.textContent = '🐉 FLAWLESS RACHA 2-0';
-        }
-        if (txtExpl) txtExpl.textContent = '¡Victoria por Racha Imbatible! 2 rounds consecutivos ganados otorgan 2 puntos de campeonato.';
-      } else if (isTight) {
-        if (badgePts) badgePts.textContent = '⭐ +1 PUNTO DE CAMPEONATO';
-        if (badgeStreak) {
-          badgeStreak.className = 'badge bg-warning text-dark text-uppercase font-monospace';
-          badgeStreak.textContent = '⚡ VICTORIA AJUSTADA 2-1';
-        }
-        if (txtExpl) txtExpl.textContent = '¡Fatality en Round Decisivo! Victoria 2 a 1 otorga 1 punto de campeonato.';
-      } else {
-        if (badgePts) badgePts.textContent = 'COMBATE EN CURSO';
-        if (badgeStreak) {
-          badgeStreak.className = 'badge bg-danger text-uppercase font-monospace';
-          badgeStreak.textContent = '1 ROUND GANADO';
-        }
-        if (txtExpl) txtExpl.textContent = `${mk1P1Data.name} va ganando 1-0. Sube a 2 rounds para coronar al campeón.`;
+      if (badgePts) badgePts.textContent = '⭐ +2 PUNTOS DE CAMPEONATO';
+      if (badgeStreak) {
+        badgeStreak.className = 'badge bg-danger text-uppercase font-monospace';
+        badgeStreak.textContent = '🐉 FLAWLESS RACHA 2-0';
       }
-      if (txtWinner) txtWinner.textContent = mk1P1Data.name;
-    } else if (s2 > s1) {
-      const isClean = (s2 === 2 && s1 === 0);
-      const isTight = (s2 === 2 && s1 === 1);
-      const resultType = isClean ? '2-0' : (isTight ? '2-1' : `${s2}-${s1}`);
-      if (inpResultType) inpResultType.value = resultType;
+      if (txtExpl) txtExpl.textContent = `¡Victoria Imbatible de ${mk1P1Data.name}! 2 rounds a 0 otorgan 2 puntos de campeonato.`;
+      if (txtWinner) txtWinner.textContent = `${mk1P1Data.name} (Ganador 2 - 0)`;
+      if (btnSubmitText) btnSubmitText.textContent = `¡CORONAR A ${mk1P1Data.name.toUpperCase()} (2-0)!`;
+    } else if (s1 === 2 && s2 === 1) {
+      if (inpResultType) inpResultType.value = '2-1';
+      if (inpWinner) inpWinner.value = mk1P1Data.id;
+      if (box1) box1.classList.add('selected-winner');
+      if (box2) box2.classList.remove('selected-winner');
+      if (badgePts) badgePts.textContent = '⭐ +1 PUNTO DE CAMPEONATO';
+      if (badgeStreak) {
+        badgeStreak.className = 'badge bg-warning text-dark text-uppercase font-monospace';
+        badgeStreak.textContent = '⚡ VICTORIA AJUSTADA 2-1';
+      }
+      if (txtExpl) txtExpl.textContent = `¡Victoria en Round Decisivo de ${mk1P1Data.name}! 2 rounds a 1 otorgan 1 punto de campeonato.`;
+      if (txtWinner) txtWinner.textContent = `${mk1P1Data.name} (Ganador 2 - 1)`;
+      if (btnSubmitText) btnSubmitText.textContent = `¡CORONAR A ${mk1P1Data.name.toUpperCase()} (2-1)!`;
+    } else if (s2 === 2 && s1 === 0) {
+      if (inpResultType) inpResultType.value = '2-0';
       if (inpWinner) inpWinner.value = mk1P2Data.id;
-
       if (box1) box1.classList.remove('selected-winner');
       if (box2) box2.classList.add('selected-winner');
-
-      if (isClean) {
-        if (badgePts) badgePts.textContent = '⭐ +2 PUNTOS DE CAMPEONATO';
-        if (badgeStreak) {
-          badgeStreak.className = 'badge bg-danger text-uppercase font-monospace';
-          badgeStreak.textContent = '🐉 FLAWLESS RACHA 2-0';
-        }
-        if (txtExpl) txtExpl.textContent = '¡Victoria por Racha Imbatible! 2 rounds consecutivos ganados otorgan 2 puntos de campeonato.';
-      } else if (isTight) {
-        if (badgePts) badgePts.textContent = '⭐ +1 PUNTO DE CAMPEONATO';
-        if (badgeStreak) {
-          badgeStreak.className = 'badge bg-warning text-dark text-uppercase font-monospace';
-          badgeStreak.textContent = '⚡ VICTORIA AJUSTADA 2-1';
-        }
-        if (txtExpl) txtExpl.textContent = '¡Fatality en Round Decisivo! Victoria 2 a 1 otorga 1 punto de campeonato.';
-      } else {
-        if (badgePts) badgePts.textContent = 'COMBATE EN CURSO';
-        if (badgeStreak) {
-          badgeStreak.className = 'badge bg-primary text-uppercase font-monospace';
-          badgeStreak.textContent = '1 ROUND GANADO';
-        }
-        if (txtExpl) txtExpl.textContent = `${mk1P2Data.name} va ganando 1-0. Sube a 2 rounds para coronar al campeón.`;
+      if (badgePts) badgePts.textContent = '⭐ +2 PUNTOS DE CAMPEONATO';
+      if (badgeStreak) {
+        badgeStreak.className = 'badge bg-danger text-uppercase font-monospace';
+        badgeStreak.textContent = '🐉 FLAWLESS RACHA 2-0';
       }
-      if (txtWinner) txtWinner.textContent = mk1P2Data.name;
-    } else {
-      // 1 - 1
+      if (txtExpl) txtExpl.textContent = `¡Victoria Imbatible de ${mk1P2Data.name}! 2 rounds a 0 otorgan 2 puntos de campeonato.`;
+      if (txtWinner) txtWinner.textContent = `${mk1P2Data.name} (Ganador 2 - 0)`;
+      if (btnSubmitText) btnSubmitText.textContent = `¡CORONAR A ${mk1P2Data.name.toUpperCase()} (2-0)!`;
+    } else if (s2 === 2 && s1 === 1) {
+      if (inpResultType) inpResultType.value = '2-1';
+      if (inpWinner) inpWinner.value = mk1P2Data.id;
+      if (box1) box1.classList.remove('selected-winner');
+      if (box2) box2.classList.add('selected-winner');
+      if (badgePts) badgePts.textContent = '⭐ +1 PUNTO DE CAMPEONATO';
+      if (badgeStreak) {
+        badgeStreak.className = 'badge bg-warning text-dark text-uppercase font-monospace';
+        badgeStreak.textContent = '⚡ VICTORIA AJUSTADA 2-1';
+      }
+      if (txtExpl) txtExpl.textContent = `¡Victoria en Round Decisivo de ${mk1P2Data.name}! 2 rounds a 1 otorgan 1 punto de campeonato.`;
+      if (txtWinner) txtWinner.textContent = `${mk1P2Data.name} (Ganador 2 - 1)`;
+      if (btnSubmitText) btnSubmitText.textContent = `¡CORONAR A ${mk1P2Data.name.toUpperCase()} (2-1)!`;
+    } else if (s1 === 1 && s2 === 1) {
       if (inpResultType) inpResultType.value = '1-1';
       if (inpWinner) inpWinner.value = '';
       if (box1) box1.classList.remove('selected-winner');
@@ -579,8 +567,35 @@ document.addEventListener('DOMContentLoaded', () => {
         badgeStreak.className = 'badge bg-warning text-dark text-uppercase font-monospace';
         badgeStreak.textContent = 'ROUND 3 DECISIVO';
       }
-      if (txtExpl) txtExpl.textContent = 'Empate a 1 round por bando. Sube a 2 puntos al luchador que gane el round decisivo (otorgará 1 punto).';
+      if (txtExpl) txtExpl.textContent = 'Empate a 1 round. Sube a 2 al luchador que gane el round decisivo (el marcador final será 2-1).';
       if (txtWinner) txtWinner.textContent = 'Empate 1-1 (Falta definir el round final)';
+      if (btnSubmitText) btnSubmitText.textContent = '¡Falta definir el round decisivo (2-1)!';
+    } else if (s1 === 1 && s2 === 0) {
+      if (inpResultType) inpResultType.value = '1-0';
+      if (inpWinner) inpWinner.value = '';
+      if (box1) box1.classList.add('selected-winner');
+      if (box2) box2.classList.remove('selected-winner');
+      if (badgePts) badgePts.textContent = 'COMBATE EN CURSO';
+      if (badgeStreak) {
+        badgeStreak.className = 'badge bg-danger text-uppercase font-monospace';
+        badgeStreak.textContent = '1 ROUND GANADO';
+      }
+      if (txtExpl) txtExpl.textContent = `${mk1P1Data.name} va ganando 1-0. Debe llegar a 2 rounds para ganar (2-0 o 2-1).`;
+      if (txtWinner) txtWinner.textContent = `${mk1P1Data.name} va ganando 1-0`;
+      if (btnSubmitText) btnSubmitText.textContent = '¡Falta 1 round para definir (2-0 o 2-1)!';
+    } else if (s2 === 1 && s1 === 0) {
+      if (inpResultType) inpResultType.value = '0-1';
+      if (inpWinner) inpWinner.value = '';
+      if (box1) box1.classList.remove('selected-winner');
+      if (box2) box2.classList.add('selected-winner');
+      if (badgePts) badgePts.textContent = 'COMBATE EN CURSO';
+      if (badgeStreak) {
+        badgeStreak.className = 'badge bg-primary text-uppercase font-monospace';
+        badgeStreak.textContent = '1 ROUND GANADO';
+      }
+      if (txtExpl) txtExpl.textContent = `${mk1P2Data.name} va ganando 1-0. Debe llegar a 2 rounds para ganar (2-0 o 2-1).`;
+      if (txtWinner) txtWinner.textContent = `${mk1P2Data.name} va ganando 1-0`;
+      if (btnSubmitText) btnSubmitText.textContent = '¡Falta 1 round para definir (2-0 o 2-1)!';
     }
   }
 
@@ -613,24 +628,77 @@ document.addEventListener('DOMContentLoaded', () => {
     if (modalFinalMK1) modalFinalMK1.show();
   }
 
-  // Controles de puntos MK1 (+ y -)
+  // Controles de puntos MK1 (+ y - con reglas: máx 2, sin 2-2 ni 3+)
   const btnMkInc1 = document.getElementById('btnMkInc1');
   const btnMkDec1 = document.getElementById('btnMkDec1');
   const btnMkInc2 = document.getElementById('btnMkInc2');
   const btnMkDec2 = document.getElementById('btnMkDec2');
 
-  if (btnMkInc1) btnMkInc1.addEventListener('click', () => { mk1Score1 = Math.min(2, mk1Score1 + 1); updateMk1FightState(); });
-  if (btnMkDec1) btnMkDec1.addEventListener('click', () => { mk1Score1 = Math.max(0, mk1Score1 - 1); updateMk1FightState(); });
-  if (btnMkInc2) btnMkInc2.addEventListener('click', () => { mk1Score2 = Math.min(2, mk1Score2 + 1); updateMk1FightState(); });
-  if (btnMkDec2) btnMkDec2.addEventListener('click', () => { mk1Score2 = Math.max(0, mk1Score2 - 1); updateMk1FightState(); });
+  if (btnMkInc1) {
+    btnMkInc1.addEventListener('click', () => {
+      if (mk1Score1 >= 2) {
+        showToast('En Mortal Kombat los puntos no pueden llegar a 3 o más.', 'warning');
+        return;
+      }
+      if (mk1Score1 + 1 === 2 && mk1Score2 === 2) {
+        showToast('En Mortal Kombat ambos no pueden tener 2-2. El combate ya fue ganado.', 'warning');
+        return;
+      }
+      mk1Score1++;
+      updateMk1FightState();
+    });
+  }
 
-  // Quick chips MK1
-  document.querySelectorAll('.mk1-quick-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      const target = chip.getAttribute('data-target');
-      const val = parseInt(chip.getAttribute('data-val')) || 1;
-      if (target === '1') mk1Score1 = Math.min(2, val === 2 ? 2 : mk1Score1 + val);
-      else if (target === '2') mk1Score2 = Math.min(2, val === 2 ? 2 : mk1Score2 + val);
+  if (btnMkDec1) {
+    btnMkDec1.addEventListener('click', () => {
+      if (mk1Score1 > 0) {
+        mk1Score1--;
+        updateMk1FightState();
+      }
+    });
+  }
+
+  if (btnMkInc2) {
+    btnMkInc2.addEventListener('click', () => {
+      if (mk1Score2 >= 2) {
+        showToast('En Mortal Kombat los puntos no pueden llegar a 3 o más.', 'warning');
+        return;
+      }
+      if (mk1Score2 + 1 === 2 && mk1Score1 === 2) {
+        showToast('En Mortal Kombat ambos no pueden tener 2-2. El combate ya fue ganado.', 'warning');
+        return;
+      }
+      mk1Score2++;
+      updateMk1FightState();
+    });
+  }
+
+  if (btnMkDec2) {
+    btnMkDec2.addEventListener('click', () => {
+      if (mk1Score2 > 0) {
+        mk1Score2--;
+        updateMk1FightState();
+      }
+    });
+  }
+
+  // Quick chips oficiales MK1 (2-0 y 2-1 directos)
+  document.querySelectorAll('[data-mk-action]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const act = btn.getAttribute('data-mk-action');
+      if (act === 'p1-2-0') {
+        mk1Score1 = 2;
+        mk1Score2 = 0;
+      } else if (act === 'p1-2-1') {
+        mk1Score1 = 2;
+        mk1Score2 = 1;
+      } else if (act === 'p2-2-0') {
+        mk1Score1 = 0;
+        mk1Score2 = 2;
+      } else if (act === 'p2-2-1') {
+        mk1Score1 = 1;
+        mk1Score2 = 2;
+      }
       updateMk1FightState();
     });
   });
@@ -640,11 +708,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // ============================================================================
   let fc26P1Data = { id: '', name: '', alias: '' };
   let fc26P2Data = { id: '', name: '', alias: '' };
-  let fc26Score1 = 3;
-  let fc26Score2 = 1;
-  let fc26Pen1 = 5;
-  let fc26Pen2 = 4;
-  let fc26PenWinner = 1;
+  let fc26Score1 = 0;
+  let fc26Score2 = 0;
+  let fc26Pen1 = 0;
+  let fc26Pen2 = 0;
+  let fc26PenWinner = 0;
+  let fc26Stage = 'regular'; // 'regular' (90 min) | 'extra_time' (120 min prórroga) | 'penalties' (tanda de penaltis)
 
   function updateFc26LiveStats() {
     const s1 = fc26Score1;
@@ -673,49 +742,154 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const box1 = document.getElementById('boxFc26P1');
     const box2 = document.getElementById('boxFc26P2');
+    const timeBadge = document.getElementById('fc26TimeBadge');
+    const stageBadge = document.getElementById('fc26StageBadge');
+    const tieControlBox = document.getElementById('fc26TieControlBox');
+    const btnGoExtra = document.getElementById('btnFcGoToExtraTime');
+    const btnGoPen = document.getElementById('btnFcGoToPenalties');
     const penBox = document.getElementById('fc26PenaltiesBox');
     const badgePts = document.getElementById('fc26CalculatedPoints');
     const labelDg = document.getElementById('fc26GoalDiffLabel');
     const ruleTxt = document.getElementById('fc26RuleText');
     const announceChamp = document.getElementById('fc26AnnounceChampion');
+    const btnSubmitText = document.getElementById('btnSubmitFinalFC26Text');
 
-    if (s1 === 0 && s2 === 0) {
-      // ESTADO INICIAL 0 - 0 (Sin jugar)
-      if (penBox) penBox.style.display = 'none';
-      if (inpPen1) inpPen1.value = '';
-      if (inpPen2) inpPen2.value = '';
-      if (inpWinner) inpWinner.value = '';
+    // Si los goles se desigualan pero estaba en penales, salir de penales
+    if (s1 !== s2 && fc26Stage === 'penalties') {
+      fc26Stage = 'regular';
+    }
 
-      if (box1) box1.classList.remove('selected-winner');
-      if (box2) box2.classList.remove('selected-winner');
+    if (s1 === s2) {
+      // ========================================================================
+      // CASO EMPATE (0-0, 1-1, 2-2, ETC.): SOLO BOTÓN DE PRÓRROGA O PENALTIS
+      // ========================================================================
+      if (fc26Stage === 'regular') {
+        // 1. Fase Regular (90 min): solo botón "Ir a prórroga"
+        if (timeBadge) timeBadge.textContent = '90 MIN';
+        if (stageBadge) {
+          stageBadge.textContent = (s1 === 0 && s2 === 0) ? '0 - 0' : 'EMPATE';
+          stageBadge.className = 'badge bg-warning text-dark text-uppercase px-2 py-0 font-monospace small';
+        }
 
-      if (badgePts) badgePts.textContent = '⚽ PARTIDO LISTO PARA COMENZAR';
-      if (labelDg) labelDg.textContent = 'MARCADOR 0 - 0 (Agrega los goles de cada finalista)';
-      if (ruleTxt) ruleTxt.textContent = 'Sube los goles de cada finalista con los botones (+) o los chips rápidos para calcular los puntos por DG.';
-      if (announceChamp) announceChamp.textContent = 'Por definir (Sube los goles)';
-    } else if (s1 === s2) {
-      // EMPATE: Activar sección de penales
-      if (penBox) penBox.style.display = 'block';
-      if (inpPen1) inpPen1.value = fc26Pen1;
-      if (inpPen2) inpPen2.value = fc26Pen2;
+        if (tieControlBox) tieControlBox.style.display = 'block';
+        if (btnGoExtra) btnGoExtra.style.display = 'inline-block';
+        if (btnGoPen) btnGoPen.style.display = 'none';
+        if (penBox) penBox.style.display = 'none';
 
-      const winnerId = (fc26PenWinner === 1) ? fc26P1Data.id : fc26P2Data.id;
-      const winnerName = (fc26PenWinner === 1) ? fc26P1Data.name : fc26P2Data.name;
-      if (inpWinner) inpWinner.value = winnerId;
+        if (inpPen1) inpPen1.value = '';
+        if (inpPen2) inpPen2.value = '';
+        if (inpWinner) inpWinner.value = '';
 
-      if (box1) box1.classList.toggle('selected-winner', fc26PenWinner === 1);
-      if (box2) box2.classList.toggle('selected-winner', fc26PenWinner === 2);
+        if (box1) box1.classList.remove('selected-winner');
+        if (box2) box2.classList.remove('selected-winner');
 
-      if (badgePts) badgePts.textContent = '⭐ DEFINICIÓN POR TANDA DE PENALTIS';
-      if (labelDg) labelDg.textContent = `EMPATE EN 90 MIN (${s1} - ${s2})`;
-      if (ruleTxt) ruleTxt.textContent = `El partido terminó empatado a ${s1} goles. El campeón se define en la tanda de penales (${fc26Pen1} - ${fc26Pen2}).`;
-      if (announceChamp) announceChamp.textContent = `${winnerName} (Por Penales)`;
+        if (badgePts) badgePts.textContent = '🤝 EMPATE 90 MIN';
+        if (labelDg) labelDg.textContent = (s1 === 0 && s2 === 0) ? '0 - 0' : `DIFERENCIA: 0 GOLES (${s1} - ${s2})`;
+        if (ruleTxt) ruleTxt.textContent = 'Regla del Torneo: Los puntos se obtienen por la diferencia neta de goles.';
+        if (announceChamp) announceChamp.textContent = 'Por definir';
+        if (btnSubmitText) btnSubmitText.textContent = '¡DEFINIR EN PRÓRROGA O PENALTIS!';
+
+      } else if (fc26Stage === 'extra_time') {
+        // 2. Fase de Prórroga (120 min): solo botón "Ir a penaltis"
+        if (timeBadge) timeBadge.textContent = '120 MIN';
+        if (stageBadge) {
+          stageBadge.textContent = 'PRÓRROGA';
+          stageBadge.className = 'badge bg-danger text-white text-uppercase px-2 py-0 font-monospace small';
+        }
+
+        if (tieControlBox) tieControlBox.style.display = 'block';
+        if (btnGoExtra) btnGoExtra.style.display = 'none';
+        if (btnGoPen) btnGoPen.style.display = 'inline-block';
+        if (penBox) penBox.style.display = 'none';
+
+        if (inpPen1) inpPen1.value = '';
+        if (inpPen2) inpPen2.value = '';
+        if (inpWinner) inpWinner.value = '';
+
+        if (box1) box1.classList.remove('selected-winner');
+        if (box2) box2.classList.remove('selected-winner');
+
+        if (badgePts) badgePts.textContent = '⏱️ EMPATE EN PRÓRROGA (120 MIN)';
+        if (labelDg) labelDg.textContent = `120 MIN: ${s1} - ${s2}`;
+        if (ruleTxt) ruleTxt.textContent = 'Regla del Torneo: Los puntos se obtienen por la diferencia neta de goles.';
+        if (announceChamp) announceChamp.textContent = 'Por definir';
+        if (btnSubmitText) btnSubmitText.textContent = '¡DEFINIR EN TANDA DE PENALTIS!';
+
+      } else if (fc26Stage === 'penalties') {
+        // 3. Fase de Penaltis: La puntuación total es la suma de los goles del partido + penaltis
+        const total1 = s1 + fc26Pen1;
+        const total2 = s2 + fc26Pen2;
+
+        if (disp1) disp1.textContent = total1;
+        if (disp2) disp2.textContent = total2;
+        if (inp1) inp1.value = total1;
+        if (inp2) inp2.value = total2;
+
+        const dgPen1 = total1 - total2;
+        const dgPen2 = total2 - total1;
+        if (badgeDg1) badgeDg1.textContent = (dgPen1 >= 0 ? `+${dgPen1}` : `${dgPen1}`) + ' DG';
+        if (badgeDg2) badgeDg2.textContent = (dgPen2 >= 0 ? `+${dgPen2}` : `${dgPen2}`) + ' DG';
+
+        if (timeBadge) timeBadge.textContent = 'PENALTIS';
+        if (stageBadge) {
+          stageBadge.textContent = 'DEFINICIÓN';
+          stageBadge.className = 'badge bg-danger text-white text-uppercase px-2 py-0 font-monospace small';
+        }
+
+        if (tieControlBox) tieControlBox.style.display = 'none';
+        if (penBox) penBox.style.display = 'block';
+
+        const dispP1 = document.getElementById('dispPen1');
+        const dispP2 = document.getElementById('dispPen2');
+        if (dispP1) dispP1.textContent = fc26Pen1;
+        if (dispP2) dispP2.textContent = fc26Pen2;
+
+        const elTotalScore1 = document.getElementById('totalScoreText1');
+        const elTotalScore2 = document.getElementById('totalScoreText2');
+        const elCalcDetail1 = document.getElementById('calcDetail1');
+        const elCalcDetail2 = document.getElementById('calcDetail2');
+        if (elTotalScore1) elTotalScore1.textContent = total1;
+        if (elTotalScore2) elTotalScore2.textContent = total2;
+        if (elCalcDetail1) elCalcDetail1.textContent = `(${s1} partido + ${fc26Pen1} penales)`;
+        if (elCalcDetail2) elCalcDetail2.textContent = `(${s2} partido + ${fc26Pen2} penales)`;
+
+        if (inpPen1) inpPen1.value = fc26Pen1;
+        if (inpPen2) inpPen2.value = fc26Pen2;
+
+        // Auto-selección del ganador si uno tiene más goles totales
+        if (total1 > total2) {
+          fc26PenWinner = 1;
+        } else if (total2 > total1) {
+          fc26PenWinner = 2;
+        }
+
+        const winnerId = (fc26PenWinner === 1) ? fc26P1Data.id : (fc26PenWinner === 2 ? fc26P2Data.id : '');
+        const winnerName = (fc26PenWinner === 1) ? fc26P1Data.name : (fc26PenWinner === 2 ? fc26P2Data.name : 'Por definir');
+        if (inpWinner) inpWinner.value = winnerId;
+
+        if (box1) box1.classList.toggle('selected-winner', fc26PenWinner === 1);
+        if (box2) box2.classList.toggle('selected-winner', fc26PenWinner === 2);
+
+        const btnW1 = document.getElementById('btnPenWinner1');
+        const btnW2 = document.getElementById('btnPenWinner2');
+        if (btnW1) {
+          btnW1.className = `btn btn-sm ${fc26PenWinner === 1 ? 'btn-warning text-dark active shadow' : 'btn-outline-warning'} w-100 mt-2 font-monospace fw-bold btn-select-pen-winner`;
+        }
+        if (btnW2) {
+          btnW2.className = `btn btn-sm ${fc26PenWinner === 2 ? 'btn-warning text-dark active shadow' : 'btn-outline-warning'} w-100 mt-2 font-monospace fw-bold btn-select-pen-winner`;
+        }
+
+        if (badgePts) badgePts.textContent = '⭐ DEFINICIÓN POR TANDA DE PENALTIS';
+        if (labelDg) labelDg.textContent = `TOTAL ACUMULADO: ${total1} - ${total2} (${s1}+${fc26Pen1} vs ${s2}+${fc26Pen2})`;
+        if (ruleTxt) ruleTxt.textContent = `Goles totales: ${s1} de juego + penaltis. Total final: ${total1} a ${total2}.`;
+        if (announceChamp) announceChamp.textContent = winnerId ? `${winnerName} (Por Penales)` : 'Empate en penales (Sigue sumando)';
+        if (btnSubmitText) btnSubmitText.textContent = winnerId ? `¡CORONAR A ${winnerName.split(' ')[0].toUpperCase()} POR PENALTIS!` : '¡DEFINIR GANADOR DE PENALTIS!';
+      }
+
     } else {
-      // VICTORIA REGULAR POR GOLES
-      if (penBox) penBox.style.display = 'none';
-      if (inpPen1) inpPen1.value = '';
-      if (inpPen2) inpPen2.value = '';
-
+      // ========================================================================
+      // CASO VICTORIA POR GOLES (s1 !== s2)
+      // ========================================================================
       const isP1Winner = (s1 > s2);
       const diff = isP1Winner ? dg1 : dg2;
       const gf = isP1Winner ? s1 : s2;
@@ -724,13 +898,42 @@ document.addEventListener('DOMContentLoaded', () => {
       const winnerName = isP1Winner ? fc26P1Data.name : fc26P2Data.name;
       if (inpWinner) inpWinner.value = winnerId;
 
+      if (tieControlBox) tieControlBox.style.display = 'none';
+      if (penBox) penBox.style.display = 'none';
+      if (inpPen1) inpPen1.value = '';
+      if (inpPen2) inpPen2.value = '';
+
       if (box1) box1.classList.toggle('selected-winner', isP1Winner);
       if (box2) box2.classList.toggle('selected-winner', !isP1Winner);
 
-      if (badgePts) badgePts.textContent = `⭐ +${diff} PUNTOS DE CAMPEONATO`;
-      if (labelDg) labelDg.textContent = `DIFERENCIA: +${diff} GOLES (${gf} GF - ${gc} GC)`;
-      if (ruleTxt) ruleTxt.textContent = `Regla del Torneo: ${gf} a ${gc} otorga +${diff} puntos por diferencia de goles (${gf} goles a favor).`;
-      if (announceChamp) announceChamp.textContent = winnerName;
+      if (fc26Stage === 'extra_time') {
+        // Victoria en Prórroga
+        if (timeBadge) timeBadge.textContent = '120 MIN';
+        if (stageBadge) {
+          stageBadge.textContent = 'PRÓRROGA';
+          stageBadge.className = 'badge bg-success text-white text-uppercase px-2 py-0 font-monospace small';
+        }
+
+        if (badgePts) badgePts.textContent = `⭐ +${diff} PUNTOS DE CAMPEONATO (PRÓRROGA)`;
+        if (labelDg) labelDg.textContent = `DIFERENCIA: +${diff} GOLES (${gf} GF - ${gc} GC)`;
+        if (ruleTxt) ruleTxt.textContent = `Victoria en tiempo suplementario: ${gf} a ${gc} otorga +${diff} puntos por diferencia de goles.`;
+        if (announceChamp) announceChamp.textContent = `${winnerName} (Victoria en Prórroga)`;
+        if (btnSubmitText) btnSubmitText.textContent = `¡CORONAR A ${winnerName.split(' ')[0].toUpperCase()} EN PRÓRROGA!`;
+
+      } else {
+        // Victoria regular en 90 min
+        if (timeBadge) timeBadge.textContent = '90 MIN';
+        if (stageBadge) {
+          stageBadge.textContent = 'FINAL';
+          stageBadge.className = 'badge bg-primary text-uppercase px-2 py-0 font-monospace small';
+        }
+
+        if (badgePts) badgePts.textContent = `⭐ +${diff} PUNTOS DE CAMPEONATO`;
+        if (labelDg) labelDg.textContent = `DIFERENCIA: +${diff} GOLES (${gf} GF - ${gc} GC)`;
+        if (ruleTxt) ruleTxt.textContent = `Regla del Torneo: ${gf} a ${gc} otorga +${diff} puntos por diferencia de goles (${gf} goles a favor).`;
+        if (announceChamp) announceChamp.textContent = winnerName;
+        if (btnSubmitText) btnSubmitText.textContent = '¡LEVANTAR LA OREJONA Y CORONAR AL CAMPEÓN!';
+      }
     }
   }
 
@@ -761,9 +964,10 @@ document.addEventListener('DOMContentLoaded', () => {
     fc26Score1 = parseInt(p1Score) || 0;
     fc26Score2 = parseInt(p2Score) || 0;
 
-    fc26Pen1 = 5;
-    fc26Pen2 = 4;
-    fc26PenWinner = 1;
+    fc26Pen1 = 0;
+    fc26Pen2 = 0;
+    fc26PenWinner = 0;
+    fc26Stage = 'regular';
     updateFc26LiveStats();
 
     if (modalFinalFC26) modalFinalFC26.show();
@@ -791,6 +995,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Botones de transición de fases: Prórroga y Penaltis (sin mensajes)
+  const btnFcGoToExtraTime = document.getElementById('btnFcGoToExtraTime');
+  if (btnFcGoToExtraTime) {
+    btnFcGoToExtraTime.addEventListener('click', () => {
+      fc26Stage = 'extra_time';
+      updateFc26LiveStats();
+    });
+  }
+
+  const btnFcGoToPenalties = document.getElementById('btnFcGoToPenalties');
+  if (btnFcGoToPenalties) {
+    btnFcGoToPenalties.addEventListener('click', () => {
+      fc26Stage = 'penalties';
+      fc26Pen1 = 0;
+      fc26Pen2 = 0;
+      fc26PenWinner = 0;
+      updateFc26LiveStats();
+    });
+  }
+
+  const btnFcBackToExtra = document.getElementById('btnFcBackToExtra');
+  if (btnFcBackToExtra) {
+    btnFcBackToExtra.addEventListener('click', () => {
+      fc26Stage = 'extra_time';
+      fc26Pen1 = 0;
+      fc26Pen2 = 0;
+      fc26PenWinner = 0;
+      updateFc26LiveStats();
+    });
+  }
+
   // Controles de tanda de penales
   const dispPen1 = document.getElementById('dispPen1');
   const dispPen2 = document.getElementById('dispPen2');
@@ -810,6 +1045,9 @@ document.addEventListener('DOMContentLoaded', () => {
       updateFc26LiveStats();
     });
   });
+
+  // Categoría del partido actualmente abierto en modalRecordScore
+  let currentStandardCategory = 'fc26';
 
   // Abrir modal de resultado al hacer clic en un partido
   document.querySelectorAll('.btn-open-match-modal').forEach(btn => {
@@ -831,6 +1069,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const currentWinner = btn.getAttribute('data-winner-id') || '';
       const isFinal = btn.getAttribute('data-is-final') === '1';
       const category = btn.getAttribute('data-category') || (new URLSearchParams(window.location.search).get('category') || 'fc26');
+      currentStandardCategory = category;
 
       // Si es Gran Final: abrir modal temático específico según la categoría (FC26 o MK1)
       if (isFinal) {
@@ -851,8 +1090,48 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('modalP1Name').textContent = p1Name;
       document.getElementById('modalP2Name').textContent = p2Name;
 
-      inputScore1.value = p1Score;
-      inputScore2.value = p2Score;
+      // Adaptación dinámica según categoría (MK1 vs FC26)
+      const mk1StdBox = document.getElementById('mk1StandardPresetsBox');
+      const lbl1 = document.getElementById('modalLabelScore1');
+      const lbl2 = document.getElementById('modalLabelScore2');
+
+      if (category === 'mk1') {
+        if (mk1StdBox) {
+          mk1StdBox.style.display = 'block';
+          const p1Short = (p1Name || 'J1').split(' ')[0];
+          const p2Short = (p2Name || 'J2').split(' ')[0];
+          mk1StdBox.querySelectorAll('.btn-p1-label').forEach(el => el.textContent = p1Short);
+          mk1StdBox.querySelectorAll('.btn-p2-label').forEach(el => el.textContent = p2Short);
+        }
+        if (lbl1) lbl1.textContent = 'Rounds Ganados (0 a 2)';
+        if (lbl2) lbl2.textContent = 'Rounds Ganados (0 a 2)';
+        if (inputScore1) {
+          inputScore1.setAttribute('max', '2');
+          let s1 = Math.min(2, Math.max(0, parseInt(p1Score) || 0));
+          inputScore1.value = s1;
+        }
+        if (inputScore2) {
+          inputScore2.setAttribute('max', '2');
+          let s2 = Math.min(2, Math.max(0, parseInt(p2Score) || 0));
+          // Evitar 2-2
+          if (parseInt(inputScore1.value) === 2 && s2 === 2) {
+            s2 = 1;
+          }
+          inputScore2.value = s2;
+        }
+      } else {
+        if (mk1StdBox) mk1StdBox.style.display = 'none';
+        if (lbl1) lbl1.textContent = 'Goles Marcados';
+        if (lbl2) lbl2.textContent = 'Goles Marcados';
+        if (inputScore1) {
+          inputScore1.removeAttribute('max');
+          inputScore1.value = p1Score;
+        }
+        if (inputScore2) {
+          inputScore2.removeAttribute('max');
+          inputScore2.value = p2Score;
+        }
+      }
 
       // Actualizar opciones del select de ganador
       selectWinner.innerHTML = `
@@ -877,7 +1156,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Pre-selección inteligente del ganador al cambiar scores
+  // Marcadores rápidos en modal estándar de Mortal Kombat
+  document.querySelectorAll('.btn-mk-std-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const s1 = parseInt(btn.getAttribute('data-s1'));
+      const s2 = parseInt(btn.getAttribute('data-s2'));
+      if (inputScore1) inputScore1.value = s1;
+      if (inputScore2) inputScore2.value = s2;
+      autoPickWinner();
+    });
+  });
+
+  // Pre-selección inteligente del ganador al cambiar scores y restricciones MK1
   function autoPickWinner() {
     if (!inputScore1 || !inputScore2 || !selectWinner) return;
     const s1 = parseInt(inputScore1.value) || 0;
@@ -895,13 +1185,64 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  if (inputScore1) inputScore1.addEventListener('input', autoPickWinner);
-  if (inputScore2) inputScore2.addEventListener('input', autoPickWinner);
+  function enforceMk1StandardRules(activeInput, otherInput) {
+    if (currentStandardCategory !== 'mk1') return;
+    let val = parseInt(activeInput.value);
+    if (isNaN(val)) return;
+
+    if (val > 2) {
+      activeInput.value = 2;
+      showToast('En Mortal Kombat los puntos no pueden llegar a 3 o más.', 'warning');
+    } else if (val < 0) {
+      activeInput.value = 0;
+    }
+
+    const cur = parseInt(activeInput.value) || 0;
+    const oth = parseInt(otherInput.value) || 0;
+    if (cur === 2 && oth === 2) {
+      otherInput.value = 1;
+      showToast('En Mortal Kombat ambos no pueden tener 2-2. Ajustado a 2-1.', 'warning');
+    }
+  }
+
+  if (inputScore1) {
+    inputScore1.addEventListener('input', () => {
+      enforceMk1StandardRules(inputScore1, inputScore2);
+      autoPickWinner();
+    });
+  }
+  if (inputScore2) {
+    inputScore2.addEventListener('input', () => {
+      enforceMk1StandardRules(inputScore2, inputScore1);
+      autoPickWinner();
+    });
+  }
 
   // Enviar resultado del partido estándar
   if (formRecordScore) {
     formRecordScore.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      // Validación estricta MK1: solo 2-0 o 2-1, sin 3+ ni 2-2
+      if (currentStandardCategory === 'mk1') {
+        const s1 = parseInt(inputScore1.value) || 0;
+        const s2 = parseInt(inputScore2.value) || 0;
+
+        if (s1 > 2 || s2 > 2) {
+          showToast('En Mortal Kombat los puntos no pueden llegar a 3 o más. Máximo 2 rounds ganados.', 'danger');
+          return;
+        }
+        if (s1 === 2 && s2 === 2) {
+          showToast('En Mortal Kombat ambos no pueden tener 2-2. El combate termina al alcanzar 2 rounds.', 'danger');
+          return;
+        }
+        const isValidMK = (s1 === 2 && (s2 === 0 || s2 === 1)) || (s2 === 2 && (s1 === 0 || s1 === 1));
+        if (!isValidMK) {
+          showToast('En Mortal Kombat los puntos solo deben ser 2-0 o 2-1 (al mejor de 3 rounds).', 'danger');
+          return;
+        }
+      }
+
       const formData = new FormData(formRecordScore);
       formData.append('action', 'update_match');
 
@@ -937,12 +1278,24 @@ document.addEventListener('DOMContentLoaded', () => {
     formFinalMK1.addEventListener('submit', async (e) => {
       e.preventDefault();
       const winnerId = document.getElementById('mk1FinalWinnerId').value;
-      if (!winnerId || (mk1Score1 === 0 && mk1Score2 === 0)) {
-        showToast('Debes subir los puntos (+) para definir al ganador del combate', 'danger');
+      
+      // Validación estricta MK1: solo 2-0 o 2-1, sin 3+ ni 2-2
+      if (mk1Score1 > 2 || mk1Score2 > 2) {
+        showToast('En Mortal Kombat los puntos no pueden llegar a 3 o más.', 'danger');
         return;
       }
-      if (mk1Score1 === mk1Score2) {
-        showToast('El combate está empatado (1-1). Sube el round decisivo a uno de los luchadores para desempatar', 'danger');
+      if (mk1Score1 === 2 && mk1Score2 === 2) {
+        showToast('En Mortal Kombat ambos no pueden tener 2-2. El combate termina al alcanzar 2 rounds ganados.', 'danger');
+        return;
+      }
+      const isValidMK = (mk1Score1 === 2 && (mk1Score2 === 0 || mk1Score2 === 1)) ||
+                        (mk1Score2 === 2 && (mk1Score1 === 0 || mk1Score1 === 1));
+      if (!isValidMK || !winnerId) {
+        if (mk1Score1 === 1 && mk1Score2 === 1) {
+          showToast('El combate está 1-1. Sube a 2 rounds al luchador ganador para definir 2-1.', 'warning');
+        } else {
+          showToast('En Mortal Kombat los puntos solo deben ser 2-0 o 2-1 (al mejor de 3 rounds).', 'danger');
+        }
         return;
       }
 
@@ -981,6 +1334,22 @@ document.addEventListener('DOMContentLoaded', () => {
   if (formFinalFC26) {
     formFinalFC26.addEventListener('submit', async (e) => {
       e.preventDefault();
+
+      if (fc26Score1 === 0 && fc26Score2 === 0 && fc26Stage === 'regular') {
+        showToast('Debes ingresar los goles de la final para definir al campeón', 'danger');
+        return;
+      }
+
+      if (fc26Score1 === fc26Score2 && fc26Stage === 'regular') {
+        showToast('Pulsa "Ir a prórroga"', 'warning');
+        return;
+      }
+
+      if (fc26Score1 === fc26Score2 && fc26Stage === 'extra_time') {
+        showToast('Pulsa "Ir a penaltis"', 'warning');
+        return;
+      }
+
       const winnerId = document.getElementById('fc26FinalWinnerId').value;
       if (!winnerId) {
         showToast('Debes seleccionar al campeón vencedor', 'danger');

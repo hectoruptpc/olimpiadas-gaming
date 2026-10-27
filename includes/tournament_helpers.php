@@ -196,10 +196,12 @@ function get_preliminary_standings(PDO $pdo, string $category): array {
                 $playerData[$wId]['match_id'] = $m['id'];
                 if ($rType === '2-0' || $rType === '2_0') {
                     $playerData[$wId]['racha'] = 2;
-                    $playerData[$wId]['racha_label'] = '2-0';
+                    $playerData[$wId]['mk_pts'] = 2;
+                    $playerData[$wId]['racha_label'] = '2-0 (+2 pts)';
                 } else {
                     $playerData[$wId]['racha'] = 1;
-                    $playerData[$wId]['racha_label'] = '2-1';
+                    $playerData[$wId]['mk_pts'] = 1;
+                    $playerData[$wId]['racha_label'] = '2-1 (+1 pt)';
                 }
             }
 
@@ -210,11 +212,15 @@ function get_preliminary_standings(PDO $pdo, string $category): array {
                 $playerData[$lId]['opponent_name'] = $playerNames[$wId] ?? '';
                 $playerData[$lId]['match_id'] = $m['id'];
                 if ($rType === '2-1' || $rType === '2_1') {
-                    $playerData[$lId]['racha'] = 1;
-                    $playerData[$lId]['racha_label'] = '1-2';
+                    $playerData[$lId]['racha'] = 1; // Ganó 1 round en derrota 2-1
+                    $playerData[$lId]['rounds_won'] = 1;
+                    $playerData[$lId]['mk_pts'] = 0;
+                    $playerData[$lId]['racha_label'] = '1-2 (1 round)';
                 } else {
-                    $playerData[$lId]['racha'] = 0;
-                    $playerData[$lId]['racha_label'] = '0-2';
+                    $playerData[$lId]['racha'] = 0; // Ganó 0 rounds en derrota 2-0
+                    $playerData[$lId]['rounds_won'] = 0;
+                    $playerData[$lId]['mk_pts'] = 0;
+                    $playerData[$lId]['racha_label'] = '0-2 (0 rounds)';
                 }
             }
         }
@@ -235,17 +241,18 @@ function get_preliminary_standings(PDO $pdo, string $category): array {
     }
 
     if ($category === 'mk1') {
-        // Ganadores: 1º Racha DESC, 2º Segundos ASC (ganar en menos tiempo)
+        // Ganadores: 1º Racha pts DESC (2-0 [+2 pts] supera a 2-1 [+1 pt]), 2º Segundos ASC (ganar en menos tiempo)
         usort($winners, function($a, $b) {
             if ($a['racha'] !== $b['racha']) return $b['racha'] <=> $a['racha'];
             if ($a['seconds'] !== $b['seconds']) return $a['seconds'] <=> $b['seconds'];
             return $a['id'] <=> $b['id'];
         });
 
-        // Perdedores: 1º Mayor tiempo en ser derrotados (Segundos DESC), 2º Racha DESC
+        // Perdedores: 1º Haber ganado al menos 1 round (2-1 / 1-2 es superior a 2-0 / 0-2 aunque tenga más tiempo)
+        //             2º En igualdad de rounds (ambos 2-1 o ambos 2-0), mayor tiempo en ser derrotados (Segundos DESC)
         usort($losers, function($a, $b) {
-            if ($a['seconds'] !== $b['seconds']) return $b['seconds'] <=> $a['seconds'];
             if ($a['racha'] !== $b['racha']) return $b['racha'] <=> $a['racha'];
+            if ($a['seconds'] !== $b['seconds']) return $b['seconds'] <=> $a['seconds'];
             return $a['id'] <=> $b['id'];
         });
     } else {

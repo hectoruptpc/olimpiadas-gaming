@@ -493,7 +493,7 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
             <div class="col-5">
               <div class="p-3 bg-light rounded-3 border">
                 <div class="fw-bold text-dark mb-2 text-truncate" id="modalP1Name">Jugador 1</div>
-                <label class="text-muted small font-monospace d-block mb-1"><?php echo htmlspecialchars($scoreLabel); ?></label>
+                <label class="text-muted small font-monospace d-block mb-1" id="modalLabelScore1"><?php echo htmlspecialchars($scoreLabel); ?></label>
                 <input type="number" name="score1" id="matchInputScore1" class="form-control form-control-lg text-center fw-bold text-primary" min="0" value="0">
               </div>
             </div>
@@ -507,12 +507,14 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
             <div class="col-5">
               <div class="p-3 bg-light rounded-3 border">
                 <div class="fw-bold text-dark mb-2 text-truncate" id="modalP2Name">Jugador 2</div>
-                <label class="text-muted small font-monospace d-block mb-1"><?php echo htmlspecialchars($scoreLabel); ?></label>
+                <label class="text-muted small font-monospace d-block mb-1" id="modalLabelScore2"><?php echo htmlspecialchars($scoreLabel); ?></label>
                 <input type="number" name="score2" id="matchInputScore2" class="form-control form-control-lg text-center fw-bold text-primary" min="0" value="0">
               </div>
             </div>
 
           </div>
+
+          
 
           <!-- Selector de quién avanza -->
           <div class="mt-4 p-3 bg-light rounded-3 border">
@@ -566,7 +568,7 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
               <h5 class="modal-title fw-black text-warning text-uppercase mb-0 font-monospace">
                 ⚔️ GRAN FINAL SUPREMA &bull; MORTAL KOMBAT 1
               </h5>
-              <small class="text-danger font-monospace">REGISTRA LOS PUNTOS / ROUNDS (0 A 2) &bull; RACHA 2-0 = 2 PTS | 2-1 = 1 PT</small>
+              <small class="text-danger font-monospace">ROUNDS (MÁXIMO 2) &bull; MARCADOR OFICIAL: 2-0 O 2-1 (SIN 2-2)</small>
             </div>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -606,10 +608,10 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
                   <button type="button" class="btn mk1-score-btn" id="btnMkInc1">+</button>
                 </div>
 
-                <!-- Chips rápidos -->
+                <!-- Chips rápidos oficiales (2-0 y 2-1) -->
                 <div class="d-flex justify-content-center gap-1">
-                  <span class="mk1-quick-chip" data-target="1" data-val="1">+1 Round</span>
-                  <span class="mk1-quick-chip" data-target="1" data-val="2">👑 Ganar 2-0</span>
+                  <button type="button" class="btn btn-sm mk1-quick-chip" data-mk-action="p1-2-0">👑 Ganar 2-0</button>
+                  <button type="button" class="btn btn-sm mk1-quick-chip" data-mk-action="p1-2-1">⚡ Ganar 2-1</button>
                 </div>
               </div>
             </div>
@@ -652,10 +654,10 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
                   <button type="button" class="btn mk1-score-btn btn-p2" id="btnMkInc2">+</button>
                 </div>
 
-                <!-- Chips rápidos -->
+                <!-- Chips rápidos oficiales (2-0 y 2-1) -->
                 <div class="d-flex justify-content-center gap-1">
-                  <span class="mk1-quick-chip chip-p2" data-target="2" data-val="1">+1 Round</span>
-                  <span class="mk1-quick-chip chip-p2" data-target="2" data-val="2">👑 Ganar 2-0</span>
+                  <button type="button" class="btn btn-sm mk1-quick-chip chip-p2" data-mk-action="p2-2-0">👑 Ganar 2-0</button>
+                  <button type="button" class="btn btn-sm mk1-quick-chip chip-p2" data-mk-action="p2-2-1">⚡ Ganar 2-1</button>
                 </div>
               </div>
             </div>
@@ -685,8 +687,8 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
 
         <div class="modal-footer border-top border-danger border-opacity-25 bg-black bg-opacity-70 justify-content-between p-3">
           <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-mk1-action py-2 px-4 fs-6">
-            <i class="bi bi-fire me-1"></i> ¡CORONAR CAMPEÓN DE MORTAL KOMBAT 1! 🏆
+          <button type="submit" class="btn btn-mk1-action py-2 px-4 fs-6" id="btnSubmitFinalMK1">
+            <i class="bi bi-fire me-1"></i> <span id="btnSubmitFinalMK1Text">¡CORONAR CAMPEÓN DE MORTAL KOMBAT 1!</span> 🏆
           </button>
         </div>
 
@@ -714,9 +716,9 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
             <span class="fs-2">⚽</span>
             <div>
               <h5 class="modal-title fw-black text-info text-uppercase mb-0 font-monospace">
-                ⚽ GRAN FINAL &bull; UEFA CHAMPIONS LEAGUE 2026
+                ⚽ GRAN FINAL &bull; UPTPC CHAMPIONS LEAGUE 2026
               </h5>
-              <small class="text-light opacity-75 font-monospace">EA SPORTS FC 26 &bull; PUNTUACIÓN POR GOLES Y DIFERENCIA DE GOLES</small>
+              <small class="text-light opacity-75 font-monospace">UPTPC FC 26 &bull; PUNTUACIÓN POR GOLES Y DIFERENCIA DE GOLES</small>
             </div>
           </div>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -745,7 +747,7 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
                 <label class="small text-uppercase font-monospace text-light opacity-75 d-block mb-1">Goles Marcados</label>
                 <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
                   <button type="button" class="fc26-goal-btn" id="btnFcDec1">-</button>
-                  <span class="fc26-score-display" id="fc26ScoreDisp1">3</span>
+                  <span class="fc26-score-display" id="fc26ScoreDisp1">0</span>
                   <button type="button" class="fc26-goal-btn" id="btnFcInc1">+</button>
                 </div>
 
@@ -761,17 +763,17 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
             <!-- Centro: Starball & Emblema UCL -->
             <div class="col-md-2 text-center py-2">
               <div class="display-6 mb-1 text-warning">⭐</div>
-              <div class="badge bg-dark border border-info text-info font-monospace px-2 py-1 mb-1">
+              <div class="badge bg-dark border border-info text-info font-monospace px-2 py-1 mb-1" id="fc26TimeBadge">
                 90 MIN
               </div>
-              <span class="badge bg-primary text-uppercase px-2 py-0 font-monospace small" style="font-size: 0.65rem;">FINAL</span>
+              <span class="badge bg-primary text-uppercase px-2 py-0 font-monospace small" id="fc26StageBadge" style="font-size: 0.65rem;">FINAL</span>
             </div>
 
             <!-- Finalista 2 (Visitante) -->
             <div class="col-md-5">
               <div class="fc26-club-box text-center" id="boxFc26P2">
                 <div class="d-flex align-items-center justify-content-between mb-2">
-                  <span class="badge bg-dark border text-info font-monospace small" id="fc26BadgeDgP2">-2 DG</span>
+                  <span class="badge bg-dark border text-info font-monospace small" id="fc26BadgeDgP2">+0 DG</span>
                   <span class="badge bg-info text-dark text-uppercase font-monospace px-2 py-0">Visitante</span>
                 </div>
 
@@ -785,7 +787,7 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
                 <label class="small text-uppercase font-monospace text-light opacity-75 d-block mb-1">Goles Marcados</label>
                 <div class="d-flex align-items-center justify-content-center gap-2 mb-2">
                   <button type="button" class="fc26-goal-btn" id="btnFcDec2">-</button>
-                  <span class="fc26-score-display" id="fc26ScoreDisp2">1</span>
+                  <span class="fc26-score-display" id="fc26ScoreDisp2">0</span>
                   <button type="button" class="fc26-goal-btn" id="btnFcInc2">+</button>
                 </div>
 
@@ -823,15 +825,22 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
             </div>
           </div>
 
-          <!-- Sección de Tanda de Penales (Solo si hay empate) -->
+          <!-- Botón de Prórroga o Penaltis si hay empate (sin mensajes explicativos) -->
+          <div id="fc26TieControlBox" class="text-center my-3" style="display: none;">
+            <button type="button" class="btn btn-warning text-dark fw-bold px-4 py-2 rounded-pill shadow" id="btnFcGoToExtraTime" style="display: none;">
+              ⏱️ Ir a prórroga
+            </button>
+            <button type="button" class="btn btn-danger fw-bold px-4 py-2 rounded-pill shadow" id="btnFcGoToPenalties" style="display: none;">
+              🥅 Ir a penaltis
+            </button>
+          </div>
+
+          <!-- Sección de Tanda de Penales (Solo si se activa la fase de penaltis) -->
           <div class="fc26-penalties-section mb-2" id="fc26PenaltiesBox" style="display: none;">
-            <div class="text-center mb-2">
+            <div class="text-center mb-3">
               <span class="badge bg-warning text-dark font-monospace fw-bold px-3 py-1 text-uppercase">
-                ⚽ ¡EMPATE REGISTRADO! DEFINICIÓN EN TANDA DE PENALTIS 🥅
+                ⚽ TANDA DE PENALTIS 🥅
               </span>
-              <p class="small text-light opacity-80 mt-1 mb-2">
-                Al haber empate en goles reglamentarios, define quién se corona campeón en los lanzamientos desde el punto penal:
-              </p>
             </div>
 
             <div class="row align-items-center text-center g-3">
@@ -839,10 +848,13 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
                 <label class="small text-warning font-monospace d-block mb-1">Penales <span class="fc26-p1-label">J1</span></label>
                 <div class="d-flex align-items-center justify-content-center gap-2">
                   <button type="button" class="btn btn-sm btn-outline-warning" id="btnPenDec1">-</button>
-                  <span class="h4 fw-bold text-white font-monospace mb-0" id="dispPen1">5</span>
+                  <span class="h4 fw-bold text-white font-monospace mb-0" id="dispPen1">0</span>
                   <button type="button" class="btn btn-sm btn-outline-warning" id="btnPenInc1">+</button>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-warning w-100 mt-2 font-monospace fw-bold btn-select-pen-winner" data-slot="1">
+                <div class="small font-monospace text-light opacity-90 mt-1" id="penTotalBadge1">
+                  Total: <strong class="text-warning fs-6" id="totalScoreText1">0</strong> <small class="text-info d-block" id="calcDetail1">(0 partido + 0 penales)</small>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-warning w-100 mt-2 font-monospace fw-bold btn-select-pen-winner" data-slot="1" id="btnPenWinner1">
                   👑 Ganó en Penales
                 </button>
               </div>
@@ -855,13 +867,22 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
                 <label class="small text-warning font-monospace d-block mb-1">Penales <span class="fc26-p2-label">J2</span></label>
                 <div class="d-flex align-items-center justify-content-center gap-2">
                   <button type="button" class="btn btn-sm btn-outline-warning" id="btnPenDec2">-</button>
-                  <span class="h4 fw-bold text-white font-monospace mb-0" id="dispPen2">4</span>
+                  <span class="h4 fw-bold text-white font-monospace mb-0" id="dispPen2">0</span>
                   <button type="button" class="btn btn-sm btn-outline-warning" id="btnPenInc2">+</button>
                 </div>
-                <button type="button" class="btn btn-sm btn-outline-warning w-100 mt-2 font-monospace fw-bold btn-select-pen-winner" data-slot="2">
+                <div class="small font-monospace text-light opacity-90 mt-1" id="penTotalBadge2">
+                  Total: <strong class="text-warning fs-6" id="totalScoreText2">0</strong> <small class="text-info d-block" id="calcDetail2">(0 partido + 0 penales)</small>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-warning w-100 mt-2 font-monospace fw-bold btn-select-pen-winner" data-slot="2" id="btnPenWinner2">
                   👑 Ganó en Penales
                 </button>
               </div>
+            </div>
+
+            <div class="text-center mt-3">
+              <button type="button" class="btn btn-outline-secondary btn-sm rounded-pill font-monospace" id="btnFcBackToExtra">
+                ↩️ Volver a Prórroga / Ajustar Marcador
+              </button>
             </div>
           </div>
 
@@ -869,8 +890,8 @@ $scoreLabel = $isFC26 ? 'Goles Marcados' : 'Rounds Ganados (0 a 2)';
 
         <div class="modal-footer border-top border-info border-opacity-25 bg-black bg-opacity-70 justify-content-between p-3">
           <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-fc26-action py-2 px-4 fs-6">
-            <i class="bi bi-trophy-fill me-1"></i> ¡LEVANTAR LA OREJONA Y CORONAR AL CAMPEÓN! 🏆
+          <button type="submit" class="btn btn-fc26-action py-2 px-4 fs-6" id="btnSubmitFinalFC26">
+            <i class="bi bi-trophy-fill me-1"></i> <span id="btnSubmitFinalFC26Text">¡LEVANTAR LA OREJONA Y CORONAR AL CAMPEÓN!</span> 🏆
           </button>
         </div>
 
@@ -1364,7 +1385,7 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('celebMusicStatus').textContent = '🔊 Sonando a todo volumen: Techno Syndrome (Mortal Kombat)';
     } else {
       document.getElementById('celebTopBadge').textContent = '⭐ ¡GLORIA ETERNA UEFA CHAMPIONS LEAGUE! ⭐';
-      document.getElementById('celebGameTitle').textContent = 'CAMPEÓN DE LA COPA EA SPORTS FC 26';
+      document.getElementById('celebGameTitle').textContent = 'CAMPEÓN DE LA COPA UPTPC FC 26';
       document.getElementById('celebSubtitle').textContent = '¡Ha levantado la Orejona y entra en la historia grande del torneo UPTPC 2026!';
       document.getElementById('celebMusicStatus').textContent = '🔊 Sonando a todo volumen: Himno Oficial UEFA Champions League';
     }
